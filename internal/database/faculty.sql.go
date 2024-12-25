@@ -79,36 +79,13 @@ func (q *Queries) DeleteFacultyByID(ctx context.Context, id uuid.UUID) (Faculty,
 	return i, err
 }
 
-const getFacultyByID = `-- name: GetFacultyByID :one
-SELECT id, user_id, name, email, university_id, designation, research_areas, interested_papers, created_at, updated_at FROM faculty
-WHERE id = $1
-`
-
-func (q *Queries) GetFacultyByID(ctx context.Context, id uuid.UUID) (Faculty, error) {
-	row := q.db.QueryRowContext(ctx, getFacultyByID, id)
-	var i Faculty
-	err := row.Scan(
-		&i.ID,
-		&i.UserID,
-		&i.Name,
-		&i.Email,
-		&i.UniversityID,
-		&i.Designation,
-		pq.Array(&i.ResearchAreas),
-		pq.Array(&i.InterestedPapers),
-		&i.CreatedAt,
-		&i.UpdatedAt,
-	)
-	return i, err
-}
-
-const getFacultysOfUser = `-- name: GetFacultysOfUser :many
+const getFacultiesOfUser = `-- name: GetFacultiesOfUser :many
 SELECT id, user_id, name, email, university_id, designation, research_areas, interested_papers, created_at, updated_at FROM faculty
 WHERE user_id = $1
 `
 
-func (q *Queries) GetFacultysOfUser(ctx context.Context, userID uuid.UUID) ([]Faculty, error) {
-	rows, err := q.db.QueryContext(ctx, getFacultysOfUser, userID)
+func (q *Queries) GetFacultiesOfUser(ctx context.Context, userID uuid.UUID) ([]Faculty, error) {
+	rows, err := q.db.QueryContext(ctx, getFacultiesOfUser, userID)
 	if err != nil {
 		return nil, err
 	}
@@ -139,6 +116,73 @@ func (q *Queries) GetFacultysOfUser(ctx context.Context, userID uuid.UUID) ([]Fa
 		return nil, err
 	}
 	return items, nil
+}
+
+const getFacultiesOfUserByUniversity = `-- name: GetFacultiesOfUserByUniversity :many
+SELECT id, user_id, name, email, university_id, designation, research_areas, interested_papers, created_at, updated_at FROM faculty
+WHERE user_id = $1 and university_id = $2
+`
+
+type GetFacultiesOfUserByUniversityParams struct {
+	UserID       uuid.UUID
+	UniversityID uuid.UUID
+}
+
+func (q *Queries) GetFacultiesOfUserByUniversity(ctx context.Context, arg GetFacultiesOfUserByUniversityParams) ([]Faculty, error) {
+	rows, err := q.db.QueryContext(ctx, getFacultiesOfUserByUniversity, arg.UserID, arg.UniversityID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Faculty
+	for rows.Next() {
+		var i Faculty
+		if err := rows.Scan(
+			&i.ID,
+			&i.UserID,
+			&i.Name,
+			&i.Email,
+			&i.UniversityID,
+			&i.Designation,
+			pq.Array(&i.ResearchAreas),
+			pq.Array(&i.InterestedPapers),
+			&i.CreatedAt,
+			&i.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getFacultyByID = `-- name: GetFacultyByID :one
+SELECT id, user_id, name, email, university_id, designation, research_areas, interested_papers, created_at, updated_at FROM faculty
+WHERE id = $1
+`
+
+func (q *Queries) GetFacultyByID(ctx context.Context, id uuid.UUID) (Faculty, error) {
+	row := q.db.QueryRowContext(ctx, getFacultyByID, id)
+	var i Faculty
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.Name,
+		&i.Email,
+		&i.UniversityID,
+		&i.Designation,
+		pq.Array(&i.ResearchAreas),
+		pq.Array(&i.InterestedPapers),
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
 }
 
 const updateFacultyByID = `-- name: UpdateFacultyByID :one
