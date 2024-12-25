@@ -83,6 +83,7 @@ func main() {
 	v1Router.Post("/faculties/create", apiCfg.middlewareAuth(apiCfg.handlerCreateFaculty))
 	v1Router.Post("/faculties/update", apiCfg.middlewareAuth(apiCfg.handlerUpdateFacultyByID))
 	v1Router.Get("/faculties/user/get", apiCfg.middlewareAuth(apiCfg.handlerGetFacultiesOfUser))
+	v1Router.Post("/faculties/user/university/get", apiCfg.middlewareAuth(apiCfg.handlerGetFacultiesOfUserByUniversityID))
 	v1Router.Post("/faculties/get", apiCfg.middlewareAuth(apiCfg.handlerGetFacultyByID))
 	v1Router.Post("/faculties/delete", apiCfg.middlewareAuth(apiCfg.handlerDeleteFacultyByID))
 

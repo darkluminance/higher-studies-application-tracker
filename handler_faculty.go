@@ -80,7 +80,37 @@ func (apiConfig *apiConfig) handlerUpdateFacultyByID(w http.ResponseWriter, r *h
 }
 
 func (apiConfig *apiConfig) handlerGetFacultiesOfUser(w http.ResponseWriter, r *http.Request, user database.User) {
-	facultys, err := apiConfig.DB.GetFacultysOfUser(r.Context(), user.ID)
+	facultys, err := apiConfig.DB.GetFacultiesOfUser(r.Context(), user.ID)
+	if err != nil {
+		respondWithError(w, http.StatusNotFound, "Faculty not found")
+		return
+	}
+
+	var faculty_list []Faculty
+
+	for _, faculty := range facultys {
+		faculty_list = append(faculty_list, databaseFacultyToFaculty(faculty))
+	}
+
+	respondWithJSON(w, http.StatusOK, faculty_list)
+}
+
+func (apiConfig *apiConfig) handlerGetFacultiesOfUserByUniversityID(w http.ResponseWriter, r *http.Request, user database.User) {
+	type parameters struct {
+		UniversityID uuid.UUID `json:"university_id"`
+	}
+	params := parameters{}
+
+	err := json.NewDecoder(r.Body).Decode(&params)
+	if err != nil {
+		respondWithError(w, http.StatusBadRequest, fmt.Sprintf("Invalid request payload: %v", err))
+		return
+	}
+
+	facultys, err := apiConfig.DB.GetFacultiesOfUserByUniversity(r.Context(), database.GetFacultiesOfUserByUniversityParams{
+		UserID:       user.ID,
+		UniversityID: params.UniversityID,
+	})
 	if err != nil {
 		respondWithError(w, http.StatusNotFound, "Faculty not found")
 		return
