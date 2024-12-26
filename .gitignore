@@ -1,5 +1,12 @@
 .vscode/
-gotutorial.exe
 .env
-thunder-tests/
-sql/
+
+go-server/go-server.exe
+go-server/.env
+go-server/thunder-tests/
+go-server/sql/
+
+solid-js-frontend/node_modules
+solid-js-frontend/dist
+solid-js-frontend/.env
+solid-js-frontend/bun.lockb
