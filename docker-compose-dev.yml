@@ -40,7 +40,7 @@ services:
     build:
       context: ./postgresql-database
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - db_volume:/var/lib/postgresql/data
     environment:
       - POSTGRES_USER=${DB_USERNAME}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
@@ -56,4 +56,4 @@ networks:
 
 volumes:
   go-mod-cache:
-  postgres_data:
+  db_volume:
