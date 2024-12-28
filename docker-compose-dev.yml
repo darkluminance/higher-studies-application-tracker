@@ -12,6 +12,8 @@ services:
       - .env
     environment:
       - DB_URL=${DB_URL}
+      - PORT=${PORT}
+      - SECRET_KEY=${SECRET_KEY}
     extra_hosts:
       - "host.docker.internal:host-gateway"
     networks:
@@ -30,6 +32,7 @@ services:
       - /app/node_modules
     environment:
       - NODE_ENV=development
+      - VITE_BACKEND_URL=${VITE_BACKEND_URL}
     depends_on:
       - backend
     networks:
@@ -40,7 +43,7 @@ services:
     build:
       context: ./postgresql-database
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - db_volume:/var/lib/postgresql/data
     environment:
       - POSTGRES_USER=${DB_USERNAME}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
@@ -56,4 +59,4 @@ networks:
 
 volumes:
   go-mod-cache:
-  postgres_data:
+  db_volume:

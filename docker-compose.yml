@@ -9,6 +9,8 @@ services:
       - .env
     environment:
       - DB_URL=${DB_URL}
+      - PORT=${PORT}
+      - SECRET_KEY=${SECRET_KEY}
     networks:
       - app-network
     depends_on:
@@ -17,7 +19,7 @@ services:
   frontend:
     build:
       context: ./solid-js-frontend
-      dockerfile: Dockerfile-dev
+      dockerfile: Dockerfile
     ports:
       - "3000:3000"
     volumes:
@@ -25,6 +27,7 @@ services:
       - /app/node_modules
     environment:
       - NODE_ENV=development
+      - VITE_BACKEND_URL=${VITE_BACKEND_URL}
     depends_on:
       - backend
     networks:

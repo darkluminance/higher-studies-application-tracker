@@ -8,6 +8,27 @@ CREATE TABLE users (
     updated_at TIMESTAMP DEFAULT NOW()
 );
 
+CREATE TABLE university (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    user_id UUID NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    name VARCHAR(255) NOT NULL,
+    website VARCHAR(20),
+    location TEXT,  
+    main_ranking INTEGER,
+    subject_ranking INTEGER,
+    application_deadline DATE,
+    early_deadline DATE,
+    is_gre_must BOOLEAN DEFAULT false,
+    is_gmat_must BOOLEAN DEFAULT false,
+    lor_count INTEGER DEFAULT 0,
+    is_official_transcript_required BOOLEAN DEFAULT false,
+    is_transcript_needs_evaluation BOOLEAN DEFAULT false,
+    accepted_evaluations TEXT[],
+    created_at TIMESTAMP DEFAULT NOW(),
+    updated_at TIMESTAMP DEFAULT NOW()
+);
+
 CREATE TABLE recommender (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     user_id UUID NOT NULL,
@@ -36,6 +57,7 @@ CREATE TABLE faculty (
     name VARCHAR(255) NOT NULL,
     email VARCHAR(50) UNIQUE,
     university_id UUID NOT NULL,
+    FOREIGN KEY (university_id) REFERENCES university(id) ON DELETE CASCADE,
     designation VARCHAR(255) NOT NULL,
     research_areas TEXT[],
     interested_papers TEXT[],
@@ -72,27 +94,6 @@ CREATE TABLE mail (
     updated_at TIMESTAMP DEFAULT NOW()
 );
 
-CREATE TABLE university (
-    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    user_id UUID NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    name VARCHAR(255) NOT NULL,
-    website VARCHAR(20),
-    location TEXT,  
-    main_ranking INTEGER,
-    subject_ranking INTEGER,
-    application_deadline DATE,
-    early_deadline DATE,
-    is_gre_must BOOLEAN DEFAULT false,
-    is_gmat_must BOOLEAN DEFAULT false,
-    lor_count INTEGER DEFAULT 0,
-    is_official_transcript_required BOOLEAN DEFAULT false,
-    is_transcript_needs_evaluation BOOLEAN DEFAULT false,
-    accepted_evaluations TEXT[],
-    created_at TIMESTAMP DEFAULT NOW(),
-    updated_at TIMESTAMP DEFAULT NOW()
-);
-
 CREATE TYPE university_application_status_enum AS ENUM (
     'NOT APPLIED',
     'SKIPPED',
@@ -119,3 +120,33 @@ CREATE TABLE university_application (
     created_at TIMESTAMP DEFAULT NOW(),
     updated_at TIMESTAMP DEFAULT NOW()
 );
+
+CREATE OR REPLACE FUNCTION remove_deleted_faculty()
+RETURNS TRIGGER AS $$
+BEGIN
+    UPDATE university_application
+    SET shortlisted_faculties_id = array_remove(shortlisted_faculties_id, OLD.id)
+    WHERE OLD.id = ANY(shortlisted_faculties_id);
+    RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION remove_deleted_recommender()
+RETURNS TRIGGER AS $$
+BEGIN
+    UPDATE university_application
+    SET recommenders_id = array_remove(recommenders_id, OLD.id)
+    WHERE OLD.id = ANY(recommenders_id);
+    RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER on_delete_faculty
+AFTER DELETE ON faculty
+FOR EACH ROW
+EXECUTE FUNCTION remove_deleted_faculty();
+
+CREATE TRIGGER on_delete_recommender
+AFTER DELETE ON recommender
+FOR EACH ROW
+EXECUTE FUNCTION remove_deleted_recommender();
