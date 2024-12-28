@@ -1,8 +1,12 @@
 import { fetchData, getAuthenticatedData } from "../utils";
 import { setUserData } from "../stores/UserStore";
 import toast from "solid-toast";
+import LoadingButton from "../components/LoadingButton";
+import { createSignal } from "solid-js";
 
 export default function Login() {
+	const [loading, setLoading] = createSignal(false);
+
 	const handleSubmit = async (event: SubmitEvent) => {
 		event.preventDefault();
 
@@ -14,12 +18,17 @@ export default function Login() {
 		const headers = new Headers();
 		headers.append("Authorization", `${username}:${password}`);
 
+		setLoading(true);
+
 		const response = await fetchData("/login", {
 			method: "GET",
 			headers: headers,
 		});
 
+		setLoading(false);
+
 		if (response.token) {
+			setLoading(true);
 			sessionStorage.setItem("token", response.token);
 			toast.success("Login successful. Redirecting to dashboard");
 
@@ -52,11 +61,7 @@ export default function Login() {
 							class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
 						/>
 					</label>
-					<input
-						type="submit"
-						value="Login"
-						class="w-full px-4 py-2 bg-cyan-500 text-white rounded-md hover:bg-cyan-600 focus:outline-none"
-					/>
+					<LoadingButton loading={loading()} text="Login"></LoadingButton>
 				</form>
 				<a
 					href="/register"
