@@ -5,6 +5,7 @@ go-server/go-server.exe
 go-server/.env
 go-server/thunder-tests/
 go-server/sql/
+go-server/tmp/
 
 solid-js-frontend/node_modules
 solid-js-frontend/dist
