@@ -6,6 +6,7 @@ import { Recommenders } from "../models/Recommender";
 import toast from "solid-toast";
 import ItemInputBase from "../components/ItemInputBase";
 import RecommenderForm from "../components/Inputs/RecommenderForm";
+import BaseAllEntries from "../components/BaseAllEntries";
 
 export default function Recommender() {
 	return <DashboardBase component={RecommenderComponent} />;
@@ -60,41 +61,13 @@ function RecommenderComponent() {
 
 	return (
 		<>
-			<div class="px-8 py-4">
-				<div class=" flex justify-between">
-					<h1 class="text-xl">Recommenders </h1>
-					<button
-						class="px-4 py-2 bg-cyan-500 text-white rounded-md hover:bg-cyan-600 focus:outline-none"
-						onClick={() => {
-							setShowItemInputter(true);
-							setEditData();
-						}}
-					>
-						Add +
-					</button>
-				</div>
-				<Show when={recommenders()}>
-					<DynamicTable
-						data={recommenders()}
-						setEditData={(val: Recommenders) => {
-							setEditData(val);
-							setShowItemInputter(true);
-						}}
-						deleteFunction={handleDeleteRecommender}
-					></DynamicTable>
-				</Show>
-			</div>
-			<Show when={showItemInputter()}>
-				<ItemInputBase
-					closeFunction={() => {
-						setShowItemInputter(false);
-						setEditData();
-					}}
-					component={RecommenderForm}
-					editData={editData()}
-					fallback={handleCompleteSubmit}
-				></ItemInputBase>
-			</Show>
+			<BaseAllEntries
+				title="Recommenders"
+				data={recommenders()}
+				handleDelete={handleDeleteRecommender}
+				formComponent={RecommenderForm}
+				fetchData={fetchRecommenders}
+			/>
 		</>
 	);
 }

@@ -58,7 +58,6 @@ type Mail struct {
 	ID                   uuid.UUID `json:"id"`
 	UserID               uuid.UUID `json:"user_id"`
 	FacultyID            uuid.UUID `json:"faculty_id"`
-	FacultyName          string    `json:"faculty_name"`
 	IsMailed             bool      `json:"is_mailed"`
 	IsMailReplied        bool      `json:"is_mail_replied"`
 	ReplyVibe            string    `json:"reply_vibe"`
@@ -85,6 +84,20 @@ type University struct {
 	AcceptedEvaluations          []string  `json:"accepted_evaluations"`
 	CreatedAt                    time.Time `json:"created_at"`
 	UpdatedAt                    time.Time `json:"updated_at"`
+}
+
+type UniversityApplication struct {
+	ID                     uuid.UUID   `json:"id"`
+	UserID                 uuid.UUID   `json:"user_id"`
+	UniversityID           uuid.UUID   `json:"university_id"`
+	ShortlistedFacultiesID []uuid.UUID `json:"shortlisted_faculties_id"`
+	RecommendersID         []uuid.UUID `json:"recommenders_id"`
+	ApplicationStatus      string      `json:"application_status"`
+	LanguageScoreSubmitted bool        `json:"language_score_submitted"`
+	GreSubmitted           bool        `json:"gre_submitted"`
+	GmatSubmitted          bool        `json:"gmat_submitted"`
+	CreatedAt              time.Time   `json:"created_at"`
+	UpdatedAt              time.Time   `json:"updated_at"`
 }
 
 // Functions
@@ -163,20 +176,6 @@ func databaseInterviewToInterview(databaseInterview database.Interview) Intervie
 	}
 }
 
-func databaseMailToMailWithName(databaseMail database.GetMailByIDRow) Mail {
-	return Mail{
-		ID:                   databaseMail.ID,
-		UserID:               databaseMail.UserID,
-		FacultyName:          databaseMail.FacultyName,
-		IsMailed:             databaseMail.IsMailed.Bool,
-		IsMailReplied:        databaseMail.IsMailReplied.Bool,
-		ReplyVibe:            string(databaseMail.ReplyVibe.ReplyVibeEnum),
-		IsInterviewRequested: databaseMail.IsInterviewRequested.Bool,
-		CreatedAt:            databaseMail.CreatedAt.Time,
-		UpdatedAt:            databaseMail.UpdatedAt.Time,
-	}
-}
-
 func databaseMailToMailWithID(databaseMail database.Mail) Mail {
 	return Mail{
 		ID:                   databaseMail.ID,
@@ -188,5 +187,21 @@ func databaseMailToMailWithID(databaseMail database.Mail) Mail {
 		IsInterviewRequested: databaseMail.IsInterviewRequested.Bool,
 		CreatedAt:            databaseMail.CreatedAt.Time,
 		UpdatedAt:            databaseMail.UpdatedAt.Time,
+	}
+}
+
+func databaseUniversityApplicationToUniversityApplication(databaseApplication database.UniversityApplication) UniversityApplication {
+	return UniversityApplication{
+		ID:                     databaseApplication.ID,
+		UserID:                 databaseApplication.UserID,
+		UniversityID:           databaseApplication.UniversityID,
+		ShortlistedFacultiesID: databaseApplication.ShortlistedFacultiesID,
+		RecommendersID:         databaseApplication.RecommendersID,
+		ApplicationStatus:      string(databaseApplication.ApplicationStatus.UniversityApplicationStatusEnum),
+		LanguageScoreSubmitted: databaseApplication.LanguageScoreSubmitted.Bool,
+		GreSubmitted:           databaseApplication.GreSubmitted.Bool,
+		GmatSubmitted:          databaseApplication.GmatSubmitted.Bool,
+		CreatedAt:              databaseApplication.CreatedAt.Time,
+		UpdatedAt:              databaseApplication.UpdatedAt.Time,
 	}
 }

@@ -50,14 +50,7 @@ func (apiConfig *apiConfig) handlerGetMailsOfUser(w http.ResponseWriter, r *http
 
 	var mail_list []Mail
 	for _, mail := range mails {
-		mail_list = append(mail_list, databaseMailToMailWithName(database.GetMailByIDRow{
-			UserID:               mail.UserID,
-			FacultyName:          mail.FacultyName,
-			IsMailed:             mail.IsMailed,
-			IsMailReplied:        mail.IsMailReplied,
-			ReplyVibe:            mail.ReplyVibe,
-			IsInterviewRequested: mail.IsInterviewRequested,
-		}))
+		mail_list = append(mail_list, databaseMailToMailWithID(mail))
 	}
 
 	respondWithJSON(w, http.StatusOK, mail_list)
@@ -81,14 +74,7 @@ func (apiConfig *apiConfig) handlerGetMailByID(w http.ResponseWriter, r *http.Re
 		return
 	}
 
-	respondWithJSON(w, http.StatusOK, databaseMailToMailWithName(database.GetMailByIDRow{
-		UserID:               mail.UserID,
-		FacultyName:          mail.FacultyName,
-		IsMailed:             mail.IsMailed,
-		IsMailReplied:        mail.IsMailReplied,
-		ReplyVibe:            mail.ReplyVibe,
-		IsInterviewRequested: mail.IsInterviewRequested,
-	}))
+	respondWithJSON(w, http.StatusOK, databaseMailToMailWithID(mail))
 }
 
 func (apiConfig *apiConfig) handlerUpdateMailByID(w http.ResponseWriter, r *http.Request, user database.User) {
@@ -168,14 +154,7 @@ func (apiConfig *apiConfig) handlerGetMailsOfUserByFacultyID(w http.ResponseWrit
 
 	var mail_list []Mail
 	for _, mail := range mails {
-		mail_list = append(mail_list, databaseMailToMailWithName(database.GetMailByIDRow{
-			UserID:               mail.UserID,
-			FacultyName:          mail.FacultyName,
-			IsMailed:             mail.IsMailed,
-			IsMailReplied:        mail.IsMailReplied,
-			ReplyVibe:            mail.ReplyVibe,
-			IsInterviewRequested: mail.IsInterviewRequested,
-		}))
+		mail_list = append(mail_list, databaseMailToMailWithID(mail))
 	}
 
 	respondWithJSON(w, http.StatusOK, mail_list)

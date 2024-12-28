@@ -1,4 +1,4 @@
-import { createEffect, createSignal, onMount, Show } from "solid-js";
+import { createSignal, onMount, Show } from "solid-js";
 import { getAuthenticatedData, postAuthenticatedData } from "../utils";
 import { Universities } from "../models/University";
 import DashboardBase from "../components/DashboardBase";
@@ -71,7 +71,7 @@ function UniversityComponent() {
 						Add +
 					</button>
 				</div>
-				<Show when={universities()?.length}>
+				<Show when={universities()}>
 					<DynamicTable
 						data={universities()}
 						setEditData={(val: Universities) => {

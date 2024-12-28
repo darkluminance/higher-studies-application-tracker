@@ -31,6 +31,13 @@ func ToNullReplyVibeEnum(s string) database.NullReplyVibeEnum {
 	return database.NullReplyVibeEnum{ReplyVibeEnum: database.ReplyVibeEnum(s), Valid: true}
 }
 
+func ToNullApplicationStatusEnum(s string) database.NullUniversityApplicationStatusEnum {
+	if s == "" {
+		return database.NullUniversityApplicationStatusEnum{Valid: false}
+	}
+	return database.NullUniversityApplicationStatusEnum{UniversityApplicationStatusEnum: database.UniversityApplicationStatusEnum(s), Valid: true}
+}
+
 func convertStringArrayToUUIDArray(id_list []string) []uuid.UUID {
 	var ids []uuid.UUID
 	for _, id := range id_list {

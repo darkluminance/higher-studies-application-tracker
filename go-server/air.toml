@@ -1,0 +1,14 @@
+air.toml
+root = "."
+tmp_dir = "tmp"
+
+[build]
+cmd = "go build -o ./tmp/main ."
+bin = "./tmp/main"
+exclude_dir = ["assets", "tmp", "vendor"]
+include_ext = ["go", "tpl", "tmpl", "html"]
+exclude_regex = ["_test.go"]
+delay = 1000
+
+[misc]
+clean_on_exit = true

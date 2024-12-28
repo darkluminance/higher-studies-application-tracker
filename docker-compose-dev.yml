@@ -2,13 +2,18 @@ services:
   backend:
     build:
       context: ./go-server
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile-dev
+    volumes:
+      - ./go-server:/app
+      - go-mod-cache:/go/pkg/mod
     ports:
       - "8080:8080"
     env_file:
       - .env
     environment:
       - DB_URL=${DB_URL}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     networks:
       - app-network
     depends_on:
@@ -50,4 +55,5 @@ networks:
     driver: bridge
 
 volumes:
+  go-mod-cache:
   postgres_data:

@@ -31,6 +31,7 @@ export default function DynamicTable(props: {
 				filtered[key] = filtered[key] ? "YES" : "NO";
 			}
 		});
+
 		return filtered;
 	});
 

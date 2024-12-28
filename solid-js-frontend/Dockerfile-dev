@@ -6,6 +6,9 @@ COPY package.json ./
 
 RUN bun install
 
+COPY src ./src
+COPY .env ./
+
 EXPOSE 3000
 
 CMD ["bun", "run", "dev", "--host"]

@@ -93,6 +93,12 @@ func main() {
 	v1Router.Post("/mails/get", apiCfg.middlewareAuth(apiCfg.handlerGetMailByID))
 	v1Router.Post("/mails/delete", apiCfg.middlewareAuth(apiCfg.handlerDeleteMailByID))
 
+	v1Router.Post("/applications/create", apiCfg.middlewareAuth(apiCfg.handlerCreateUniversityApplication))
+	v1Router.Post("/applications/update", apiCfg.middlewareAuth(apiCfg.handlerUpdateUniversityApplicationByID))
+	v1Router.Get("/applications/user/get", apiCfg.middlewareAuth(apiCfg.handlerGetUniversityApplicationsOfUser))
+	v1Router.Post("/applications/get", apiCfg.middlewareAuth(apiCfg.handlerGetUniversityApplicationByID))
+	v1Router.Post("/applications/delete", apiCfg.middlewareAuth(apiCfg.handlerDeleteUniversityApplicationByID))
+
 	v1Router.Get("/enums", apiCfg.middlewareAuth(apiCfg.handlerGetEnumValues))
 
 	router.Mount("/v1", v1Router)
