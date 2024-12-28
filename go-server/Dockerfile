@@ -22,7 +22,6 @@ WORKDIR /app
 
 # Copy the binary from builder
 COPY --from=builder /app/main .
-COPY --from=builder /app/.env .
 
 # Create necessary directories and set permissions
 RUN chmod +x /app/main
