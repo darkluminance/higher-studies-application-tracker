@@ -75,28 +75,14 @@ func (q *Queries) DeleteMailByID(ctx context.Context, id uuid.UUID) (Mail, error
 }
 
 const getMailByID = `-- name: GetMailByID :one
-SELECT m.id, m.user_id, m.faculty_id, m.is_mailed, m.is_mail_replied, m.reply_vibe, m.is_interview_requested, m.created_at, m.updated_at, f.name as faculty_name
+SELECT m.id, m.user_id, m.faculty_id, m.is_mailed, m.is_mail_replied, m.reply_vibe, m.is_interview_requested, m.created_at, m.updated_at
 FROM mail m
-JOIN faculty f ON m.faculty_id = f.id
 WHERE m.id = $1
 `
 
-type GetMailByIDRow struct {
-	ID                   uuid.UUID
-	UserID               uuid.UUID
-	FacultyID            uuid.UUID
-	IsMailed             sql.NullBool
-	IsMailReplied        sql.NullBool
-	ReplyVibe            NullReplyVibeEnum
-	IsInterviewRequested sql.NullBool
-	CreatedAt            sql.NullTime
-	UpdatedAt            sql.NullTime
-	FacultyName          string
-}
-
-func (q *Queries) GetMailByID(ctx context.Context, id uuid.UUID) (GetMailByIDRow, error) {
+func (q *Queries) GetMailByID(ctx context.Context, id uuid.UUID) (Mail, error) {
 	row := q.db.QueryRowContext(ctx, getMailByID, id)
-	var i GetMailByIDRow
+	var i Mail
 	err := row.Scan(
 		&i.ID,
 		&i.UserID,
@@ -107,40 +93,25 @@ func (q *Queries) GetMailByID(ctx context.Context, id uuid.UUID) (GetMailByIDRow
 		&i.IsInterviewRequested,
 		&i.CreatedAt,
 		&i.UpdatedAt,
-		&i.FacultyName,
 	)
 	return i, err
 }
 
 const getMailsOfUser = `-- name: GetMailsOfUser :many
-SELECT m.id, m.user_id, m.faculty_id, m.is_mailed, m.is_mail_replied, m.reply_vibe, m.is_interview_requested, m.created_at, m.updated_at, f.name as faculty_name
-FROM mail m
-JOIN faculty f ON m.faculty_id = f.id
-WHERE m.user_id = $1
+SELECT id, user_id, faculty_id, is_mailed, is_mail_replied, reply_vibe, is_interview_requested, created_at, updated_at
+FROM mail 
+WHERE user_id = $1
 `
 
-type GetMailsOfUserRow struct {
-	ID                   uuid.UUID
-	UserID               uuid.UUID
-	FacultyID            uuid.UUID
-	IsMailed             sql.NullBool
-	IsMailReplied        sql.NullBool
-	ReplyVibe            NullReplyVibeEnum
-	IsInterviewRequested sql.NullBool
-	CreatedAt            sql.NullTime
-	UpdatedAt            sql.NullTime
-	FacultyName          string
-}
-
-func (q *Queries) GetMailsOfUser(ctx context.Context, userID uuid.UUID) ([]GetMailsOfUserRow, error) {
+func (q *Queries) GetMailsOfUser(ctx context.Context, userID uuid.UUID) ([]Mail, error) {
 	rows, err := q.db.QueryContext(ctx, getMailsOfUser, userID)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []GetMailsOfUserRow
+	var items []Mail
 	for rows.Next() {
-		var i GetMailsOfUserRow
+		var i Mail
 		if err := rows.Scan(
 			&i.ID,
 			&i.UserID,
@@ -151,7 +122,6 @@ func (q *Queries) GetMailsOfUser(ctx context.Context, userID uuid.UUID) ([]GetMa
 			&i.IsInterviewRequested,
 			&i.CreatedAt,
 			&i.UpdatedAt,
-			&i.FacultyName,
 		); err != nil {
 			return nil, err
 		}
@@ -167,10 +137,9 @@ func (q *Queries) GetMailsOfUser(ctx context.Context, userID uuid.UUID) ([]GetMa
 }
 
 const getMailsOfUserByFaculty = `-- name: GetMailsOfUserByFaculty :many
-SELECT m.id, m.user_id, m.faculty_id, m.is_mailed, m.is_mail_replied, m.reply_vibe, m.is_interview_requested, m.created_at, m.updated_at, f.name as faculty_name
-FROM mail m
-JOIN faculty f ON m.faculty_id = f.id
-WHERE m.user_id = $1 AND m.faculty_id = $2
+SELECT id, user_id, faculty_id, is_mailed, is_mail_replied, reply_vibe, is_interview_requested, created_at, updated_at
+FROM mail 
+WHERE user_id = $1 AND faculty_id = $2
 `
 
 type GetMailsOfUserByFacultyParams struct {
@@ -178,28 +147,15 @@ type GetMailsOfUserByFacultyParams struct {
 	FacultyID uuid.UUID
 }
 
-type GetMailsOfUserByFacultyRow struct {
-	ID                   uuid.UUID
-	UserID               uuid.UUID
-	FacultyID            uuid.UUID
-	IsMailed             sql.NullBool
-	IsMailReplied        sql.NullBool
-	ReplyVibe            NullReplyVibeEnum
-	IsInterviewRequested sql.NullBool
-	CreatedAt            sql.NullTime
-	UpdatedAt            sql.NullTime
-	FacultyName          string
-}
-
-func (q *Queries) GetMailsOfUserByFaculty(ctx context.Context, arg GetMailsOfUserByFacultyParams) ([]GetMailsOfUserByFacultyRow, error) {
+func (q *Queries) GetMailsOfUserByFaculty(ctx context.Context, arg GetMailsOfUserByFacultyParams) ([]Mail, error) {
 	rows, err := q.db.QueryContext(ctx, getMailsOfUserByFaculty, arg.UserID, arg.FacultyID)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []GetMailsOfUserByFacultyRow
+	var items []Mail
 	for rows.Next() {
-		var i GetMailsOfUserByFacultyRow
+		var i Mail
 		if err := rows.Scan(
 			&i.ID,
 			&i.UserID,
@@ -210,7 +166,6 @@ func (q *Queries) GetMailsOfUserByFaculty(ctx context.Context, arg GetMailsOfUse
 			&i.IsInterviewRequested,
 			&i.CreatedAt,
 			&i.UpdatedAt,
-			&i.FacultyName,
 		); err != nil {
 			return nil, err
 		}
