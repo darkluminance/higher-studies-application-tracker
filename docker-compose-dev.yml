@@ -12,6 +12,8 @@ services:
       - .env
     environment:
       - DB_URL=${DB_URL}
+      - PORT=${PORT}
+      - SECRET_KEY=${SECRET_KEY}
     extra_hosts:
       - "host.docker.internal:host-gateway"
     networks:
@@ -30,6 +32,7 @@ services:
       - /app/node_modules
     environment:
       - NODE_ENV=development
+      - VITE_BACKEND_URL=${VITE_BACKEND_URL}
     depends_on:
       - backend
     networks:
