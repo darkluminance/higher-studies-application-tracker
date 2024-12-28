@@ -14,8 +14,6 @@ export default function Recommender() {
 
 function RecommenderComponent() {
 	const [recommenders, setRecommenders] = createSignal<Recommenders[]>();
-	const [showItemInputter, setShowItemInputter] = createSignal(false);
-	const [editData, setEditData] = createSignal();
 
 	const fetchRecommenders = async () => {
 		setRecommenders();
@@ -44,11 +42,6 @@ function RecommenderComponent() {
 			.then(() => {
 				fetchRecommenders();
 			});
-	};
-
-	const handleCompleteSubmit = () => {
-		setShowItemInputter(false);
-		fetchRecommenders();
 	};
 
 	onMount(() => {

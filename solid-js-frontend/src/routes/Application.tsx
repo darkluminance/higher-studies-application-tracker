@@ -14,8 +14,6 @@ export default function Application() {
 
 function ApplicationComponent() {
 	const [applications, setApplications] = createSignal<Applications[]>();
-	const [showItemInputter, setShowItemInputter] = createSignal(false);
-	const [editData, setEditData] = createSignal();
 
 	const fetchApplicationLists = async () => {
 		setApplications();
@@ -45,11 +43,6 @@ function ApplicationComponent() {
 			.then(() => {
 				fetchApplicationLists();
 			});
-	};
-
-	const handleCompleteSubmit = () => {
-		setShowItemInputter(false);
-		fetchApplicationLists();
 	};
 
 	onMount(() => {

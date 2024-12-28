@@ -1,10 +1,14 @@
+import { createSignal } from "solid-js";
+import LoadingButton from "../components/LoadingButton";
 import { fetchData } from "../utils";
 
 export default function Register() {
-	const handleSubmit = async (event) => {
+	const [loading, setLoading] = createSignal(false);
+
+	const handleSubmit = async (event: SubmitEvent) => {
 		event.preventDefault();
 
-		const formData = new FormData(event.target);
+		const formData = new FormData(event.target as HTMLFormElement);
 
 		const data = {
 			name: formData.get("name"),
@@ -12,6 +16,7 @@ export default function Register() {
 			email: formData.get("email"),
 			password: formData.get("password"),
 		};
+		setLoading(true);
 
 		const response = await fetchData("/users/create", {
 			method: "POST",
@@ -22,6 +27,8 @@ export default function Register() {
 		});
 
 		if (response) window.location.href = "/login";
+
+		setLoading(false);
 	};
 	return (
 		<div class="flex h-screen items-center justify-center bg-gray-50 text-gray-600">
@@ -64,11 +71,8 @@ export default function Register() {
 							class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
 						/>
 					</label>
-					<input
-						type="submit"
-						value="Register"
-						class="w-full px-4 py-2 bg-cyan-500 text-white rounded-md hover:bg-cyan-600 focus:outline-none"
-					/>
+
+					<LoadingButton loading={loading()} text="Login"></LoadingButton>
 				</form>
 				<a
 					href="/login"
