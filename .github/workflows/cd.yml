@@ -28,4 +28,4 @@ jobs:
       run: sudo docker rm -f higher-studies-application-tracker_db || true
       
     - name: Run Docker Container
-      run: sudo docker compose -f $(pwd)/docker-compose.yml up -d 
+      run: sudo docker compose -f ../../docker-compose.yml up -d 
