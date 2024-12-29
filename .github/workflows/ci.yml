@@ -2,40 +2,13 @@ name: Docker Image CI
 
 on:
   push:
-    branches: [ "master" ]
+    branches: ["master"]
 
 jobs:
-
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Login to Dockerhub
-      run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login --username "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-
-    - name: Create .env File
-      run: |
-        echo "DB_URL=${{ secrets.DB_URL }}" >> .env
-        echo "PORT=${{ secrets.PORT }}" >> .env
-        echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> .env
-        echo "VITE_BACKEND_URL=${{ secrets.VITE_BACKEND_URL }}" >> .env
-        echo "DB_USERNAME=${{ secrets.DB_USERNAME }}" >> .env
-        echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
-        echo "DB_DATABASE=${{ secrets.DB_DATABASE }}" >> .env
-      
-    - name: Build and Push Backend Image
-      run: |
-        docker compose build backend
-        docker push ryedae/higher-studies-application-tracker_backend:latest
-
-    - name: Build and Push Frontend Image
-      run: |
-        docker compose build frontend
-        docker push ryedae/higher-studies-application-tracker_frontend:latest
-
-    - name: Build and Push Database Image
-      run: |
-        docker compose build db
-        docker push ryedae/higher-studies-application-tracker_db:latest
+      - uses: actions/checkout@v4
+      - name: Just running
+        run: echo "Hi there"
