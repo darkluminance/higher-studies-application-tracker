@@ -1,0 +1,31 @@
+name: CD Pipeline
+
+on:
+  workflow_run:
+    workflows: ["Docker Image CI"]
+    types:
+      - completed
+
+jobs:
+
+  build:
+
+    runs-on: self-hosted
+
+    steps:
+    - name: Pull Docker backend
+      run: sudo docker pull ryedae/higher-studies-application-tracker_backend:latest
+    - name: Pull Docker frontend
+      run: sudo docker pull ryedae/higher-studies-application-tracker_frontend:latest
+    - name: Pull Docker db
+      run: sudo docker pull ryedae/higher-studies-application-tracker_db:latest
+      
+    - name: Delete Old ones
+      run: sudo docker rm -f higher-studies-application-tracker_backend || true
+    - name: Delete Old docker frontend
+      run: sudo docker rm -f higher-studies-application-tracker_frontend || true
+    - name: Delete Old docker db
+      run: sudo docker rm -f higher-studies-application-tracker_db || true
+      
+    - name: Run Docker Container
+      run: sudo docker compose up -d
