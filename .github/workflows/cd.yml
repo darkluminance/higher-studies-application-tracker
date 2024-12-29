@@ -13,8 +13,7 @@ jobs:
     steps:
       - name: Navigate to dir
         run: |
-          cd 
-          cd/myapps
+          cd /home/ubuntu/myapps
           git fetch
           git pull
 
