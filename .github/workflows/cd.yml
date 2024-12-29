@@ -15,8 +15,8 @@ jobs:
         run: |
           git config --global --add safe.directory /home/ubuntu/myapps/higher-studies-application-tracker
           cd /home/ubuntu/myapps/higher-studies-application-tracker
-          git fetch
-          git pull
+          sudo git fetch
+          sudo git pull
 
       - name: Remove previous container
         run: sudo docker compose down
