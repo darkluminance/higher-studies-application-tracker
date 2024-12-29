@@ -13,7 +13,6 @@ jobs:
     runs-on: self-hosted
 
     steps:
-    - uses: actions/checkout@v4
     - name: Pull Docker backend
       run: sudo docker pull ryedae/higher-studies-application-tracker_backend:latest
     - name: Pull Docker frontend
@@ -29,4 +28,4 @@ jobs:
       run: sudo docker rm -f higher-studies-application-tracker_db || true
       
     - name: Run Docker Container
-      run: sudo docker compose -f ../../docker-compose.yml up -d 
+      run: sudo docker compose -f $(pwd)/docker-compose.yml up -d 
