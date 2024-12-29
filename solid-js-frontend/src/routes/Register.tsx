@@ -78,7 +78,7 @@ export default function Register() {
 						/>
 					</label>
 
-					<LoadingButton loading={loading()} text="Login"></LoadingButton>
+					<LoadingButton loading={loading()} text="Register"></LoadingButton>
 				</form>
 				<a
 					href="/login"
