@@ -26,6 +26,21 @@ jobs:
       run: sudo docker rm -f higher-studies-application-tracker_frontend || true
     - name: Delete Old docker db
       run: sudo docker rm -f higher-studies-application-tracker_db || true
+
+    - name: Navigate to dir
+      run: cd $(pwd)
+    - name: Create .env File
+      run: |
+        echo "DB_URL=${{ secrets.DB_URL }}" >> .env
+        echo "PORT=${{ secrets.PORT }}" >> .env
+        echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> .env
+        echo "VITE_BACKEND_URL=${{ secrets.VITE_BACKEND_URL }}" >> .env
+        echo "DB_USERNAME=${{ secrets.DB_USERNAME }}" >> .env
+        echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
+        echo "DB_DATABASE=${{ secrets.DB_DATABASE }}" >> .env
+
+    - name: Remove previous container
+      run: sudo docker compose down
       
     - name: Run Docker Container
-      run: sudo docker compose -f $(pwd)/docker-compose.yml up -d 
+      run: sudo docker compose -f ./docker-compose.yml up -d 
