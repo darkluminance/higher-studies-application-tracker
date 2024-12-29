@@ -26,6 +26,7 @@ func (apiConfig *apiConfig) handlerCreateUniversity(w http.ResponseWriter, r *ht
 		IsOfficialTranscriptRequired bool      `json:"is_official_transcript_required"`
 		IsTranscriptNeedsEvaluation  bool      `json:"is_transcript_needs_evaluation"`
 		AcceptedEvaluations          []string  `json:"accepted_evaluations"`
+		Remarks                      string    `json:"remarks"`
 	}
 	params := parameters{}
 
@@ -50,6 +51,7 @@ func (apiConfig *apiConfig) handlerCreateUniversity(w http.ResponseWriter, r *ht
 		IsOfficialTranscriptRequired: ToNullBoolean(params.IsOfficialTranscriptRequired),
 		IsTranscriptNeedsEvaluation:  ToNullBoolean(params.IsTranscriptNeedsEvaluation),
 		AcceptedEvaluations:          params.AcceptedEvaluations,
+		Remarks:                      ToNullString(params.Remarks),
 	})
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, fmt.Sprintf("Failed to create university: %v", err))
@@ -75,6 +77,7 @@ func (apiConfig *apiConfig) handlerUpdateUniversityByID(w http.ResponseWriter, r
 		IsOfficialTranscriptRequired bool      `json:"is_official_transcript_required"`
 		IsTranscriptNeedsEvaluation  bool      `json:"is_transcript_needs_evaluation"`
 		AcceptedEvaluations          []string  `json:"accepted_evaluations"`
+		Remarks                      string    `json:"remarks"`
 	}
 	params := parameters{}
 
@@ -99,6 +102,7 @@ func (apiConfig *apiConfig) handlerUpdateUniversityByID(w http.ResponseWriter, r
 		IsOfficialTranscriptRequired: ToNullBoolean(params.IsOfficialTranscriptRequired),
 		IsTranscriptNeedsEvaluation:  ToNullBoolean(params.IsTranscriptNeedsEvaluation),
 		AcceptedEvaluations:          params.AcceptedEvaluations,
+		Remarks:                      ToNullString(params.Remarks),
 	})
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, fmt.Sprintf("Failed to update university: %v", err))

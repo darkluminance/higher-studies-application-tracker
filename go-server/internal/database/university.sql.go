@@ -14,9 +14,9 @@ import (
 )
 
 const createUniversity = `-- name: CreateUniversity :one
-INSERT INTO university (user_id, name, website, location, main_ranking, subject_ranking, application_deadline, early_deadline, is_gre_must, is_gmat_must, lor_count, is_official_transcript_required, is_transcript_needs_evaluation, accepted_evaluations)
-VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
-RETURNING id, user_id, name, website, location, main_ranking, subject_ranking, application_deadline, early_deadline, is_gre_must, is_gmat_must, lor_count, is_official_transcript_required, is_transcript_needs_evaluation, accepted_evaluations, created_at, updated_at
+INSERT INTO university (user_id, name, website, location, main_ranking, subject_ranking, application_deadline, early_deadline, is_gre_must, is_gmat_must, lor_count, is_official_transcript_required, is_transcript_needs_evaluation, accepted_evaluations, remarks)
+VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
+RETURNING id, user_id, name, website, location, main_ranking, subject_ranking, application_deadline, early_deadline, is_gre_must, is_gmat_must, lor_count, is_official_transcript_required, is_transcript_needs_evaluation, accepted_evaluations, remarks, created_at, updated_at
 `
 
 type CreateUniversityParams struct {
@@ -34,6 +34,7 @@ type CreateUniversityParams struct {
 	IsOfficialTranscriptRequired sql.NullBool
 	IsTranscriptNeedsEvaluation  sql.NullBool
 	AcceptedEvaluations          []string
+	Remarks                      sql.NullString
 }
 
 func (q *Queries) CreateUniversity(ctx context.Context, arg CreateUniversityParams) (University, error) {
@@ -52,6 +53,7 @@ func (q *Queries) CreateUniversity(ctx context.Context, arg CreateUniversityPara
 		arg.IsOfficialTranscriptRequired,
 		arg.IsTranscriptNeedsEvaluation,
 		pq.Array(arg.AcceptedEvaluations),
+		arg.Remarks,
 	)
 	var i University
 	err := row.Scan(
@@ -70,6 +72,7 @@ func (q *Queries) CreateUniversity(ctx context.Context, arg CreateUniversityPara
 		&i.IsOfficialTranscriptRequired,
 		&i.IsTranscriptNeedsEvaluation,
 		pq.Array(&i.AcceptedEvaluations),
+		&i.Remarks,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
@@ -79,7 +82,7 @@ func (q *Queries) CreateUniversity(ctx context.Context, arg CreateUniversityPara
 const deleteUniversityById = `-- name: DeleteUniversityById :one
 DELETE FROM university
 WHERE id = $1
-RETURNING id, user_id, name, website, location, main_ranking, subject_ranking, application_deadline, early_deadline, is_gre_must, is_gmat_must, lor_count, is_official_transcript_required, is_transcript_needs_evaluation, accepted_evaluations, created_at, updated_at
+RETURNING id, user_id, name, website, location, main_ranking, subject_ranking, application_deadline, early_deadline, is_gre_must, is_gmat_must, lor_count, is_official_transcript_required, is_transcript_needs_evaluation, accepted_evaluations, remarks, created_at, updated_at
 `
 
 func (q *Queries) DeleteUniversityById(ctx context.Context, id uuid.UUID) (University, error) {
@@ -101,6 +104,7 @@ func (q *Queries) DeleteUniversityById(ctx context.Context, id uuid.UUID) (Unive
 		&i.IsOfficialTranscriptRequired,
 		&i.IsTranscriptNeedsEvaluation,
 		pq.Array(&i.AcceptedEvaluations),
+		&i.Remarks,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
@@ -108,7 +112,7 @@ func (q *Queries) DeleteUniversityById(ctx context.Context, id uuid.UUID) (Unive
 }
 
 const getUniversitiesOfUser = `-- name: GetUniversitiesOfUser :many
-SELECT id, user_id, name, website, location, main_ranking, subject_ranking, application_deadline, early_deadline, is_gre_must, is_gmat_must, lor_count, is_official_transcript_required, is_transcript_needs_evaluation, accepted_evaluations, created_at, updated_at FROM university
+SELECT id, user_id, name, website, location, main_ranking, subject_ranking, application_deadline, early_deadline, is_gre_must, is_gmat_must, lor_count, is_official_transcript_required, is_transcript_needs_evaluation, accepted_evaluations, remarks, created_at, updated_at FROM university
 WHERE user_id = $1
 `
 
@@ -137,6 +141,7 @@ func (q *Queries) GetUniversitiesOfUser(ctx context.Context, userID uuid.UUID) (
 			&i.IsOfficialTranscriptRequired,
 			&i.IsTranscriptNeedsEvaluation,
 			pq.Array(&i.AcceptedEvaluations),
+			&i.Remarks,
 			&i.CreatedAt,
 			&i.UpdatedAt,
 		); err != nil {
@@ -154,7 +159,7 @@ func (q *Queries) GetUniversitiesOfUser(ctx context.Context, userID uuid.UUID) (
 }
 
 const getUniversityById = `-- name: GetUniversityById :one
-SELECT id, user_id, name, website, location, main_ranking, subject_ranking, application_deadline, early_deadline, is_gre_must, is_gmat_must, lor_count, is_official_transcript_required, is_transcript_needs_evaluation, accepted_evaluations, created_at, updated_at FROM university
+SELECT id, user_id, name, website, location, main_ranking, subject_ranking, application_deadline, early_deadline, is_gre_must, is_gmat_must, lor_count, is_official_transcript_required, is_transcript_needs_evaluation, accepted_evaluations, remarks, created_at, updated_at FROM university
 WHERE id = $1
 `
 
@@ -177,6 +182,7 @@ func (q *Queries) GetUniversityById(ctx context.Context, id uuid.UUID) (Universi
 		&i.IsOfficialTranscriptRequired,
 		&i.IsTranscriptNeedsEvaluation,
 		pq.Array(&i.AcceptedEvaluations),
+		&i.Remarks,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
@@ -198,9 +204,10 @@ SET name = $2,
     is_official_transcript_required = $12,
     is_transcript_needs_evaluation = $13,
     accepted_evaluations = $14,
+    remarks = $15,
     updated_at = NOW()
 WHERE id = $1
-RETURNING id, user_id, name, website, location, main_ranking, subject_ranking, application_deadline, early_deadline, is_gre_must, is_gmat_must, lor_count, is_official_transcript_required, is_transcript_needs_evaluation, accepted_evaluations, created_at, updated_at
+RETURNING id, user_id, name, website, location, main_ranking, subject_ranking, application_deadline, early_deadline, is_gre_must, is_gmat_must, lor_count, is_official_transcript_required, is_transcript_needs_evaluation, accepted_evaluations, remarks, created_at, updated_at
 `
 
 type UpdateUniversityByIDParams struct {
@@ -218,6 +225,7 @@ type UpdateUniversityByIDParams struct {
 	IsOfficialTranscriptRequired sql.NullBool
 	IsTranscriptNeedsEvaluation  sql.NullBool
 	AcceptedEvaluations          []string
+	Remarks                      sql.NullString
 }
 
 func (q *Queries) UpdateUniversityByID(ctx context.Context, arg UpdateUniversityByIDParams) (University, error) {
@@ -236,6 +244,7 @@ func (q *Queries) UpdateUniversityByID(ctx context.Context, arg UpdateUniversity
 		arg.IsOfficialTranscriptRequired,
 		arg.IsTranscriptNeedsEvaluation,
 		pq.Array(arg.AcceptedEvaluations),
+		arg.Remarks,
 	)
 	var i University
 	err := row.Scan(
@@ -254,6 +263,7 @@ func (q *Queries) UpdateUniversityByID(ctx context.Context, arg UpdateUniversity
 		&i.IsOfficialTranscriptRequired,
 		&i.IsTranscriptNeedsEvaluation,
 		pq.Array(&i.AcceptedEvaluations),
+		&i.Remarks,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)

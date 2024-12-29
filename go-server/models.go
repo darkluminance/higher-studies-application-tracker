@@ -62,6 +62,7 @@ type Mail struct {
 	IsMailReplied        bool      `json:"is_mail_replied"`
 	ReplyVibe            string    `json:"reply_vibe"`
 	IsInterviewRequested bool      `json:"is_interview_requested"`
+	Remarks              string    `json:"remarks"`
 	CreatedAt            time.Time `json:"created_at"`
 	UpdatedAt            time.Time `json:"updated_at"`
 }
@@ -82,6 +83,7 @@ type University struct {
 	IsOfficialTranscriptRequired bool      `json:"is_official_transcript_required"`
 	IsTranscriptNeedsEvaluation  bool      `json:"is_transcript_needs_evaluation"`
 	AcceptedEvaluations          []string  `json:"accepted_evaluations"`
+	Remarks                      string    `json:"remarks"`
 	CreatedAt                    time.Time `json:"created_at"`
 	UpdatedAt                    time.Time `json:"updated_at"`
 }
@@ -90,12 +92,14 @@ type UniversityApplication struct {
 	ID                     uuid.UUID   `json:"id"`
 	UserID                 uuid.UUID   `json:"user_id"`
 	UniversityID           uuid.UUID   `json:"university_id"`
+	ApplicationType        string      `json:"application_type"`
 	ShortlistedFacultiesID []uuid.UUID `json:"shortlisted_faculties_id"`
 	RecommendersID         []uuid.UUID `json:"recommenders_id"`
 	ApplicationStatus      string      `json:"application_status"`
 	LanguageScoreSubmitted bool        `json:"language_score_submitted"`
 	GreSubmitted           bool        `json:"gre_submitted"`
 	GmatSubmitted          bool        `json:"gmat_submitted"`
+	Remarks                string      `json:"remarks"`
 	CreatedAt              time.Time   `json:"created_at"`
 	UpdatedAt              time.Time   `json:"updated_at"`
 }
@@ -129,6 +133,7 @@ func databaseUniversityToUniversity(databaseUniversity database.University) Univ
 		IsOfficialTranscriptRequired: databaseUniversity.IsOfficialTranscriptRequired.Bool,
 		IsTranscriptNeedsEvaluation:  databaseUniversity.IsTranscriptNeedsEvaluation.Bool,
 		AcceptedEvaluations:          databaseUniversity.AcceptedEvaluations,
+		Remarks:                      databaseUniversity.Remarks.String,
 		CreatedAt:                    databaseUniversity.CreatedAt.Time,
 		UpdatedAt:                    databaseUniversity.UpdatedAt.Time,
 	}
@@ -185,6 +190,7 @@ func databaseMailToMailWithID(databaseMail database.Mail) Mail {
 		IsMailReplied:        databaseMail.IsMailReplied.Bool,
 		ReplyVibe:            string(databaseMail.ReplyVibe.ReplyVibeEnum),
 		IsInterviewRequested: databaseMail.IsInterviewRequested.Bool,
+		Remarks:              databaseMail.Remarks.String,
 		CreatedAt:            databaseMail.CreatedAt.Time,
 		UpdatedAt:            databaseMail.UpdatedAt.Time,
 	}
@@ -195,12 +201,14 @@ func databaseUniversityApplicationToUniversityApplication(databaseApplication da
 		ID:                     databaseApplication.ID,
 		UserID:                 databaseApplication.UserID,
 		UniversityID:           databaseApplication.UniversityID,
+		ApplicationType:        string(databaseApplication.ApplicationType.ApplicationTypeEnum),
 		ShortlistedFacultiesID: databaseApplication.ShortlistedFacultiesID,
 		RecommendersID:         databaseApplication.RecommendersID,
 		ApplicationStatus:      string(databaseApplication.ApplicationStatus.UniversityApplicationStatusEnum),
 		LanguageScoreSubmitted: databaseApplication.LanguageScoreSubmitted.Bool,
 		GreSubmitted:           databaseApplication.GreSubmitted.Bool,
 		GmatSubmitted:          databaseApplication.GmatSubmitted.Bool,
+		Remarks:                databaseApplication.Remarks.String,
 		CreatedAt:              databaseApplication.CreatedAt.Time,
 		UpdatedAt:              databaseApplication.UpdatedAt.Time,
 	}

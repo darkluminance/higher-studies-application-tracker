@@ -17,38 +17,44 @@ const createUniversityApplication = `-- name: CreateUniversityApplication :one
 INSERT INTO university_application (
     user_id,
     university_id,
+    application_type,
     shortlisted_faculties_id,
     recommenders_id,
     application_status,
     language_score_submitted,
     gre_submitted,
-    gmat_submitted
+    gmat_submitted,
+    remarks
 )
-VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-RETURNING id, user_id, university_id, shortlisted_faculties_id, recommenders_id, application_status, language_score_submitted, gre_submitted, gmat_submitted, created_at, updated_at
+VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+RETURNING id, user_id, university_id, shortlisted_faculties_id, recommenders_id, application_type, application_status, language_score_submitted, gre_submitted, gmat_submitted, remarks, created_at, updated_at
 `
 
 type CreateUniversityApplicationParams struct {
 	UserID                 uuid.UUID
 	UniversityID           uuid.UUID
+	ApplicationType        NullApplicationTypeEnum
 	ShortlistedFacultiesID []uuid.UUID
 	RecommendersID         []uuid.UUID
 	ApplicationStatus      NullUniversityApplicationStatusEnum
 	LanguageScoreSubmitted sql.NullBool
 	GreSubmitted           sql.NullBool
 	GmatSubmitted          sql.NullBool
+	Remarks                sql.NullString
 }
 
 func (q *Queries) CreateUniversityApplication(ctx context.Context, arg CreateUniversityApplicationParams) (UniversityApplication, error) {
 	row := q.db.QueryRowContext(ctx, createUniversityApplication,
 		arg.UserID,
 		arg.UniversityID,
+		arg.ApplicationType,
 		pq.Array(arg.ShortlistedFacultiesID),
 		pq.Array(arg.RecommendersID),
 		arg.ApplicationStatus,
 		arg.LanguageScoreSubmitted,
 		arg.GreSubmitted,
 		arg.GmatSubmitted,
+		arg.Remarks,
 	)
 	var i UniversityApplication
 	err := row.Scan(
@@ -57,10 +63,12 @@ func (q *Queries) CreateUniversityApplication(ctx context.Context, arg CreateUni
 		&i.UniversityID,
 		pq.Array(&i.ShortlistedFacultiesID),
 		pq.Array(&i.RecommendersID),
+		&i.ApplicationType,
 		&i.ApplicationStatus,
 		&i.LanguageScoreSubmitted,
 		&i.GreSubmitted,
 		&i.GmatSubmitted,
+		&i.Remarks,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
@@ -70,7 +78,7 @@ func (q *Queries) CreateUniversityApplication(ctx context.Context, arg CreateUni
 const deleteUniversityApplicationById = `-- name: DeleteUniversityApplicationById :one
 DELETE FROM university_application
 WHERE id = $1
-RETURNING id, user_id, university_id, shortlisted_faculties_id, recommenders_id, application_status, language_score_submitted, gre_submitted, gmat_submitted, created_at, updated_at
+RETURNING id, user_id, university_id, shortlisted_faculties_id, recommenders_id, application_type, application_status, language_score_submitted, gre_submitted, gmat_submitted, remarks, created_at, updated_at
 `
 
 func (q *Queries) DeleteUniversityApplicationById(ctx context.Context, id uuid.UUID) (UniversityApplication, error) {
@@ -82,10 +90,12 @@ func (q *Queries) DeleteUniversityApplicationById(ctx context.Context, id uuid.U
 		&i.UniversityID,
 		pq.Array(&i.ShortlistedFacultiesID),
 		pq.Array(&i.RecommendersID),
+		&i.ApplicationType,
 		&i.ApplicationStatus,
 		&i.LanguageScoreSubmitted,
 		&i.GreSubmitted,
 		&i.GmatSubmitted,
+		&i.Remarks,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
@@ -93,7 +103,7 @@ func (q *Queries) DeleteUniversityApplicationById(ctx context.Context, id uuid.U
 }
 
 const getUniversityApplicationById = `-- name: GetUniversityApplicationById :one
-SELECT id, user_id, university_id, shortlisted_faculties_id, recommenders_id, application_status, language_score_submitted, gre_submitted, gmat_submitted, created_at, updated_at FROM university_application
+SELECT id, user_id, university_id, shortlisted_faculties_id, recommenders_id, application_type, application_status, language_score_submitted, gre_submitted, gmat_submitted, remarks, created_at, updated_at FROM university_application
 WHERE id = $1
 `
 
@@ -106,10 +116,12 @@ func (q *Queries) GetUniversityApplicationById(ctx context.Context, id uuid.UUID
 		&i.UniversityID,
 		pq.Array(&i.ShortlistedFacultiesID),
 		pq.Array(&i.RecommendersID),
+		&i.ApplicationType,
 		&i.ApplicationStatus,
 		&i.LanguageScoreSubmitted,
 		&i.GreSubmitted,
 		&i.GmatSubmitted,
+		&i.Remarks,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
@@ -117,7 +129,7 @@ func (q *Queries) GetUniversityApplicationById(ctx context.Context, id uuid.UUID
 }
 
 const getUniversityApplicationsOfUser = `-- name: GetUniversityApplicationsOfUser :many
-SELECT id, user_id, university_id, shortlisted_faculties_id, recommenders_id, application_status, language_score_submitted, gre_submitted, gmat_submitted, created_at, updated_at FROM university_application
+SELECT id, user_id, university_id, shortlisted_faculties_id, recommenders_id, application_type, application_status, language_score_submitted, gre_submitted, gmat_submitted, remarks, created_at, updated_at FROM university_application
 WHERE user_id = $1
 `
 
@@ -136,10 +148,12 @@ func (q *Queries) GetUniversityApplicationsOfUser(ctx context.Context, userID uu
 			&i.UniversityID,
 			pq.Array(&i.ShortlistedFacultiesID),
 			pq.Array(&i.RecommendersID),
+			&i.ApplicationType,
 			&i.ApplicationStatus,
 			&i.LanguageScoreSubmitted,
 			&i.GreSubmitted,
 			&i.GmatSubmitted,
+			&i.Remarks,
 			&i.CreatedAt,
 			&i.UpdatedAt,
 		); err != nil {
@@ -159,38 +173,44 @@ func (q *Queries) GetUniversityApplicationsOfUser(ctx context.Context, userID uu
 const updateUniversityApplicationByID = `-- name: UpdateUniversityApplicationByID :one
 UPDATE university_application 
 SET university_id = $2,
-    shortlisted_faculties_id = $3,
-    recommenders_id = $4,
-    application_status = $5,
-    language_score_submitted = $6,
-    gre_submitted = $7,
-    gmat_submitted = $8,
+    application_type = $3,
+    shortlisted_faculties_id = $4,
+    recommenders_id = $5,
+    application_status = $6,
+    language_score_submitted = $7,
+    gre_submitted = $8,
+    gmat_submitted = $9,
+    remarks = $10,
     updated_at = NOW()
 WHERE id = $1
-RETURNING id, user_id, university_id, shortlisted_faculties_id, recommenders_id, application_status, language_score_submitted, gre_submitted, gmat_submitted, created_at, updated_at
+RETURNING id, user_id, university_id, shortlisted_faculties_id, recommenders_id, application_type, application_status, language_score_submitted, gre_submitted, gmat_submitted, remarks, created_at, updated_at
 `
 
 type UpdateUniversityApplicationByIDParams struct {
 	ID                     uuid.UUID
 	UniversityID           uuid.UUID
+	ApplicationType        NullApplicationTypeEnum
 	ShortlistedFacultiesID []uuid.UUID
 	RecommendersID         []uuid.UUID
 	ApplicationStatus      NullUniversityApplicationStatusEnum
 	LanguageScoreSubmitted sql.NullBool
 	GreSubmitted           sql.NullBool
 	GmatSubmitted          sql.NullBool
+	Remarks                sql.NullString
 }
 
 func (q *Queries) UpdateUniversityApplicationByID(ctx context.Context, arg UpdateUniversityApplicationByIDParams) (UniversityApplication, error) {
 	row := q.db.QueryRowContext(ctx, updateUniversityApplicationByID,
 		arg.ID,
 		arg.UniversityID,
+		arg.ApplicationType,
 		pq.Array(arg.ShortlistedFacultiesID),
 		pq.Array(arg.RecommendersID),
 		arg.ApplicationStatus,
 		arg.LanguageScoreSubmitted,
 		arg.GreSubmitted,
 		arg.GmatSubmitted,
+		arg.Remarks,
 	)
 	var i UniversityApplication
 	err := row.Scan(
@@ -199,10 +219,12 @@ func (q *Queries) UpdateUniversityApplicationByID(ctx context.Context, arg Updat
 		&i.UniversityID,
 		pq.Array(&i.ShortlistedFacultiesID),
 		pq.Array(&i.RecommendersID),
+		&i.ApplicationType,
 		&i.ApplicationStatus,
 		&i.LanguageScoreSubmitted,
 		&i.GreSubmitted,
 		&i.GmatSubmitted,
+		&i.Remarks,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)

@@ -13,9 +13,9 @@ import (
 )
 
 const createMail = `-- name: CreateMail :one
-INSERT INTO mail (user_id, faculty_id, is_mailed, is_mail_replied, reply_vibe, is_interview_requested)
-VALUES ($1, $2, $3, $4, $5, $6)
-RETURNING id, user_id, faculty_id, is_mailed, is_mail_replied, reply_vibe, is_interview_requested, created_at, updated_at
+INSERT INTO mail (user_id, faculty_id, is_mailed, is_mail_replied, reply_vibe, is_interview_requested, remarks)
+VALUES ($1, $2, $3, $4, $5, $6, $7)
+RETURNING id, user_id, faculty_id, is_mailed, is_mail_replied, reply_vibe, is_interview_requested, remarks, created_at, updated_at
 `
 
 type CreateMailParams struct {
@@ -25,6 +25,7 @@ type CreateMailParams struct {
 	IsMailReplied        sql.NullBool
 	ReplyVibe            NullReplyVibeEnum
 	IsInterviewRequested sql.NullBool
+	Remarks              sql.NullString
 }
 
 func (q *Queries) CreateMail(ctx context.Context, arg CreateMailParams) (Mail, error) {
@@ -35,6 +36,7 @@ func (q *Queries) CreateMail(ctx context.Context, arg CreateMailParams) (Mail, e
 		arg.IsMailReplied,
 		arg.ReplyVibe,
 		arg.IsInterviewRequested,
+		arg.Remarks,
 	)
 	var i Mail
 	err := row.Scan(
@@ -45,6 +47,7 @@ func (q *Queries) CreateMail(ctx context.Context, arg CreateMailParams) (Mail, e
 		&i.IsMailReplied,
 		&i.ReplyVibe,
 		&i.IsInterviewRequested,
+		&i.Remarks,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
@@ -54,7 +57,7 @@ func (q *Queries) CreateMail(ctx context.Context, arg CreateMailParams) (Mail, e
 const deleteMailByID = `-- name: DeleteMailByID :one
 DELETE FROM mail
 WHERE id = $1
-RETURNING id, user_id, faculty_id, is_mailed, is_mail_replied, reply_vibe, is_interview_requested, created_at, updated_at
+RETURNING id, user_id, faculty_id, is_mailed, is_mail_replied, reply_vibe, is_interview_requested, remarks, created_at, updated_at
 `
 
 func (q *Queries) DeleteMailByID(ctx context.Context, id uuid.UUID) (Mail, error) {
@@ -68,6 +71,7 @@ func (q *Queries) DeleteMailByID(ctx context.Context, id uuid.UUID) (Mail, error
 		&i.IsMailReplied,
 		&i.ReplyVibe,
 		&i.IsInterviewRequested,
+		&i.Remarks,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
@@ -75,7 +79,7 @@ func (q *Queries) DeleteMailByID(ctx context.Context, id uuid.UUID) (Mail, error
 }
 
 const getMailByID = `-- name: GetMailByID :one
-SELECT m.id, m.user_id, m.faculty_id, m.is_mailed, m.is_mail_replied, m.reply_vibe, m.is_interview_requested, m.created_at, m.updated_at
+SELECT m.id, m.user_id, m.faculty_id, m.is_mailed, m.is_mail_replied, m.reply_vibe, m.is_interview_requested, m.remarks, m.created_at, m.updated_at
 FROM mail m
 WHERE m.id = $1
 `
@@ -91,6 +95,7 @@ func (q *Queries) GetMailByID(ctx context.Context, id uuid.UUID) (Mail, error) {
 		&i.IsMailReplied,
 		&i.ReplyVibe,
 		&i.IsInterviewRequested,
+		&i.Remarks,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
@@ -98,7 +103,7 @@ func (q *Queries) GetMailByID(ctx context.Context, id uuid.UUID) (Mail, error) {
 }
 
 const getMailsOfUser = `-- name: GetMailsOfUser :many
-SELECT id, user_id, faculty_id, is_mailed, is_mail_replied, reply_vibe, is_interview_requested, created_at, updated_at
+SELECT id, user_id, faculty_id, is_mailed, is_mail_replied, reply_vibe, is_interview_requested, remarks, created_at, updated_at
 FROM mail 
 WHERE user_id = $1
 `
@@ -120,6 +125,7 @@ func (q *Queries) GetMailsOfUser(ctx context.Context, userID uuid.UUID) ([]Mail,
 			&i.IsMailReplied,
 			&i.ReplyVibe,
 			&i.IsInterviewRequested,
+			&i.Remarks,
 			&i.CreatedAt,
 			&i.UpdatedAt,
 		); err != nil {
@@ -137,7 +143,7 @@ func (q *Queries) GetMailsOfUser(ctx context.Context, userID uuid.UUID) ([]Mail,
 }
 
 const getMailsOfUserByFaculty = `-- name: GetMailsOfUserByFaculty :many
-SELECT id, user_id, faculty_id, is_mailed, is_mail_replied, reply_vibe, is_interview_requested, created_at, updated_at
+SELECT id, user_id, faculty_id, is_mailed, is_mail_replied, reply_vibe, is_interview_requested, remarks, created_at, updated_at
 FROM mail 
 WHERE user_id = $1 AND faculty_id = $2
 `
@@ -164,6 +170,7 @@ func (q *Queries) GetMailsOfUserByFaculty(ctx context.Context, arg GetMailsOfUse
 			&i.IsMailReplied,
 			&i.ReplyVibe,
 			&i.IsInterviewRequested,
+			&i.Remarks,
 			&i.CreatedAt,
 			&i.UpdatedAt,
 		); err != nil {
@@ -188,9 +195,10 @@ SET
     is_mail_replied = $4,
     reply_vibe = $5,
     is_interview_requested = $6,
+    remarks = $7,
     updated_at = NOW()
 WHERE id = $1
-RETURNING id, user_id, faculty_id, is_mailed, is_mail_replied, reply_vibe, is_interview_requested, created_at, updated_at
+RETURNING id, user_id, faculty_id, is_mailed, is_mail_replied, reply_vibe, is_interview_requested, remarks, created_at, updated_at
 `
 
 type UpdateMailByIDParams struct {
@@ -200,6 +208,7 @@ type UpdateMailByIDParams struct {
 	IsMailReplied        sql.NullBool
 	ReplyVibe            NullReplyVibeEnum
 	IsInterviewRequested sql.NullBool
+	Remarks              sql.NullString
 }
 
 func (q *Queries) UpdateMailByID(ctx context.Context, arg UpdateMailByIDParams) (Mail, error) {
@@ -210,6 +219,7 @@ func (q *Queries) UpdateMailByID(ctx context.Context, arg UpdateMailByIDParams) 
 		arg.IsMailReplied,
 		arg.ReplyVibe,
 		arg.IsInterviewRequested,
+		arg.Remarks,
 	)
 	var i Mail
 	err := row.Scan(
@@ -220,6 +230,7 @@ func (q *Queries) UpdateMailByID(ctx context.Context, arg UpdateMailByIDParams) 
 		&i.IsMailReplied,
 		&i.ReplyVibe,
 		&i.IsInterviewRequested,
+		&i.Remarks,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)

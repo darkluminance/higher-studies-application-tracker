@@ -14,6 +14,7 @@ export type Universities = {
 	is_official_transcript_required: boolean | string;
 	is_transcript_needs_evaluation: boolean | string;
 	accepted_evaluations: string[];
+	remarks: string;
 	created_at?: Date;
 	updated_at?: Date;
 };

@@ -17,17 +17,22 @@ export default function ApplicationForm(
 	const [universities, setUniversities] = createSignal<Universities[]>([]);
 	const [recommenders, setRecommenders] = createSignal<Recommenders[]>([]);
 	const [lorCount, setLorCount] = createSignal(0);
-	const [enumValues, setEnumValues] = createSignal<string[]>([]);
+	const [applicationTypeEnumValues, setApplicationTypeEnumValues] =
+		createSignal<string[]>([]);
+	const [applicationStatusEnumValues, setApplicationStatusEnumValues] =
+		createSignal<string[]>([]);
 	const [loading, setIsLoading] = createSignal(false);
 
 	const resetForm = () => {
 		const settingData: Applications = {
 			id: "",
 			university_id: "",
+			application_type: "PHD",
 			shortlisted_faculties_id: [],
 			recommenders_id: [],
 			application_status: "NOT APPLIED",
 			language_score_submitted: false,
+			remarks: "",
 			gre_submitted: false,
 			gmat_submitted: false,
 		};
@@ -66,13 +71,23 @@ export default function ApplicationForm(
 		}
 	};
 
-	const fetchEnums = async () => {
+	const fetchApplicationStatusEnums = async () => {
 		let enums = await getAuthenticatedData(
 			"/enums?enum_name=university_application_status_enum"
 		);
 
 		if (enums) {
-			setEnumValues(enums);
+			setApplicationStatusEnumValues(enums);
+		}
+	};
+
+	const fetchApplicationTypeEnums = async () => {
+		let enums = await getAuthenticatedData(
+			"/enums?enum_name=application_type_enum"
+		);
+
+		if (enums) {
+			setApplicationTypeEnumValues(enums);
 		}
 	};
 
@@ -83,7 +98,8 @@ export default function ApplicationForm(
 	});
 
 	onMount(() => {
-		fetchEnums();
+		fetchApplicationStatusEnums();
+		fetchApplicationTypeEnums();
 		fetchUniversities();
 		fetchRecommenders();
 		if (!props?.editData) resetForm();
@@ -176,7 +192,39 @@ export default function ApplicationForm(
 				</div>
 			</div>
 			<div class="block">
-				<label>Shortlisted Faculties:</label>
+				<label for="application_type">Application Type:</label>
+				<select
+					id="application_type"
+					class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
+					value={data().application_type}
+					onChange={(e) =>
+						setData({ ...data(), application_type: e.target.value })
+					}
+				>
+					<For each={applicationTypeEnumValues()}>
+						{(value) => <option value={value}>{value}</option>}
+					</For>
+				</select>
+			</div>
+			<div class="block">
+				<div class="grid grid-cols-2">
+					<label>Shortlisted Faculties:</label>
+					<button
+						type="button"
+						class="text-right text-cyan-400 hover:text-cyan-300"
+						onClick={() => {
+							setData({
+								...data(),
+								shortlisted_faculties_id: [
+									...data().shortlisted_faculties_id,
+									"",
+								],
+							});
+						}}
+					>
+						Add Faculty
+					</button>
+				</div>
 				{data().shortlisted_faculties_id?.map((_, index) => (
 					<div class="flex gap-4 mt-2">
 						<select
@@ -207,23 +255,6 @@ export default function ApplicationForm(
 						</button>
 					</div>
 				))}
-				<div class="block">
-					<button
-						type="button"
-						class="mt-4 text-cyan-400 hover:text-cyan-300"
-						onClick={() => {
-							setData({
-								...data(),
-								shortlisted_faculties_id: [
-									...data().shortlisted_faculties_id,
-									"",
-								],
-							});
-						}}
-					>
-						Add Faculty
-					</button>
-				</div>
 			</div>
 			<div class="block">
 				<label>Recommenders:</label>
@@ -260,56 +291,71 @@ export default function ApplicationForm(
 						setData({ ...data(), application_status: e.target.value })
 					}
 				>
-					<For each={enumValues()}>
+					<For each={applicationStatusEnumValues()}>
 						{(value) => <option value={value}>{value}</option>}
 					</For>
 				</select>
 			</div>
-			<div class="block">Score submissions:</div>
-			<div class="block grid grid-cols-3 gap-4">
-				<div>
-					<label for="language_score_submitted">Language:</label>
-					<input
-						type="checkbox"
-						id="language_score_submitted"
-						checked={
-							data().language_score_submitted === "YES" ||
-							Boolean(data().language_score_submitted)
-						}
-						class="ml-2 px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
-						onInput={(e) =>
-							setData({ ...data(), language_score_submitted: e.target.checked })
-						}
-					/>
+			<div class="block">
+				Score submissions:
+				<div class="block grid grid-cols-3 gap-4">
+					<div>
+						<label for="language_score_submitted">Language:</label>
+						<input
+							type="checkbox"
+							id="language_score_submitted"
+							checked={
+								data().language_score_submitted === "YES" ||
+								Boolean(data().language_score_submitted)
+							}
+							class="ml-2 px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
+							onInput={(e) =>
+								setData({
+									...data(),
+									language_score_submitted: e.target.checked,
+								})
+							}
+						/>
+					</div>
+					<div>
+						<label for="gre_submitted">GRE:</label>
+						<input
+							type="checkbox"
+							id="gre_submitted"
+							checked={
+								data().gre_submitted === "YES" || Boolean(data().gre_submitted)
+							}
+							class="ml-2 px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
+							onInput={(e) =>
+								setData({ ...data(), gre_submitted: e.target.checked })
+							}
+						/>
+					</div>
+					<div>
+						<label for="gmat_submitted">GMAT:</label>
+						<input
+							type="checkbox"
+							id="gmat_submitted"
+							checked={
+								data().gmat_submitted === "YES" ||
+								Boolean(data().gmat_submitted)
+							}
+							class="ml-2 px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
+							onInput={(e) =>
+								setData({ ...data(), gmat_submitted: e.target.checked })
+							}
+						/>
+					</div>
 				</div>
-				<div>
-					<label for="gre_submitted">GRE:</label>
-					<input
-						type="checkbox"
-						id="gre_submitted"
-						checked={
-							data().gre_submitted === "YES" || Boolean(data().gre_submitted)
-						}
-						class="ml-2 px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
-						onInput={(e) =>
-							setData({ ...data(), gre_submitted: e.target.checked })
-						}
-					/>
-				</div>
-				<div>
-					<label for="gmat_submitted">GMAT:</label>
-					<input
-						type="checkbox"
-						id="gmat_submitted"
-						checked={
-							data().gmat_submitted === "YES" || Boolean(data().gmat_submitted)
-						}
-						class="ml-2 px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
-						onInput={(e) =>
-							setData({ ...data(), gmat_submitted: e.target.checked })
-						}
-					/>
-				</div>
+			</div>
+			<div class="block">
+				<textarea
+					id="remarks"
+					placeholder="Remarks"
+					value={data().remarks}
+					class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
+					onInput={(e) => setData({ ...data(), remarks: e.target.value })}
+				/>
 			</div>
 			<LoadingButton loading={loading()} text="Submit" />
 		</form>

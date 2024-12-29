@@ -7,6 +7,7 @@ export type Mails = {
 	is_mail_replied: boolean | string;
 	reply_vibe: string;
 	is_interview_requested: boolean | string;
+	remarks: string;
 	created_at?: Date;
 	updated_at?: Date;
 };
