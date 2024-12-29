@@ -33,6 +33,8 @@ export const fetchData = async (url: string, data: object | null = null) => {
 				} else if (res.error === "Invalid Credentials") {
 					toast.error("Invalid credentials");
 				}
+			} else if (ret.status === HttpStatus.CONFLICT) {
+				toast.error(res.error);
 			}
 			throw new Error(`HTTP error! status: ${ret.status}`);
 		}
