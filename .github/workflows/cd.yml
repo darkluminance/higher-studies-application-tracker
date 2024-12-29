@@ -14,21 +14,12 @@ jobs:
       - name: Navigate to dir
         run: |
           cd 
-          ls
-    # - name: Create .env File
-    #   run: |
-    #     echo "DB_URL=${{ secrets.DB_URL }}" >> .env
-    #     echo "PORT=${{ secrets.PORT }}" >> .env
-    #     echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> .env
-    #     echo "VITE_BACKEND_URL=${{ secrets.VITE_BACKEND_URL }}" >> .env
-    #     echo "DB_USERNAME=${{ secrets.DB_USERNAME }}" >> .env
-    #     echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
-    #     echo "DB_DATABASE=${{ secrets.DB_DATABASE }}" >> .env
+          cd/myapps
+          git fetch
+          git pull
 
-    # - name: Remove previous container
-    #   run: |
-    #     echo y | sudo docker system prune -a
-    #     sudo docker compose down
+      - name: Remove previous container
+        run: sudo docker compose down
 
-    # - name: Run Docker Container
-    #   run: sudo docker compose -f ./docker-compose.yml up -d
+      - name: Run Docker Container
+        run: sudo docker compose up --build
