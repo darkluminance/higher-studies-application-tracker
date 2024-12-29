@@ -1,5 +1,6 @@
 services:
   backend:
+    image: ryedae/higher-studies-application-tracker_backend:latest
     build:
       context: ./go-server
       dockerfile: Dockerfile
@@ -17,6 +18,7 @@ services:
       - db
 
   frontend:
+    image: ryedae/higher-studies-application-tracker_frontend:latest
     build:
       context: ./solid-js-frontend
       dockerfile: Dockerfile
@@ -34,7 +36,7 @@ services:
       - app-network
 
   db:
-    image: postgres:17-alpine
+    image: ryedae/higher-studies-application-tracker_db:latest
     build:
       context: ./postgresql-database
     volumes:
