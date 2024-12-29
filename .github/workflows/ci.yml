@@ -1,0 +1,25 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "master" ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Login to Dockerhub
+      env:
+        DOCKER_USERNAME: ${{secrets.DOCKER_USERNAME}}
+        DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
+      run: docker login -u DOCKER_USERNAME -p DOCKER_PASSWORD
+      
+    - name: Build the Docker image
+      run: docker-compose build
+
+    - name: Push to Docker
+      run: docker push ryedae/higher-studies-application-tracker:latest
