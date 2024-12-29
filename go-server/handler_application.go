@@ -32,6 +32,7 @@ func (apiConfig *apiConfig) handlerCreateUniversityApplication(w http.ResponseWr
 	application, err := apiConfig.DB.CreateUniversityApplication(r.Context(), database.CreateUniversityApplicationParams{
 		UserID:                 user.ID,
 		UniversityID:           params.UniversityID,
+		ApplicationType:        ToNullApplicationTypeEnum(params.ApplicationType),
 		ShortlistedFacultiesID: params.ShortlistedFacultiesID,
 		RecommendersID:         params.RecommendersID,
 		ApplicationStatus:      ToNullApplicationStatusEnum(params.ApplicationStatus),

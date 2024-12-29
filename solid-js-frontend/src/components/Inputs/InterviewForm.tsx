@@ -1,9 +1,10 @@
-import { createEffect, createSignal, onMount } from "solid-js";
+import { createEffect, createSignal, For, onMount } from "solid-js";
 import { getAuthenticatedData, postAuthenticatedData } from "../../utils";
 import toast from "solid-toast";
 import { setUserData } from "../../stores/UserStore";
 import LoadingButton from "../LoadingButton";
 import { Interviews } from "../../models/Interview";
+import { Faculties } from "../../models/Faculty";
 
 export default function InterviewForm(
 	props: { editData: Interviews; fallback: Function } | null
@@ -89,11 +90,16 @@ export default function InterviewForm(
 						onChange={(e) => setData({ ...data(), faculty_id: e.target.value })}
 					>
 						<option value="">Select a faculty</option>
-						{faculties().map((uni: { id: string; name: string }) => (
-							<option value={uni.id} selected={data().faculty_id === uni.id}>
-								{uni.name}
-							</option>
-						))}
+						<For each={faculties()}>
+							{(faculty: Faculties) => (
+								<option
+									value={faculty.id}
+									selected={data().faculty_id === faculty.id}
+								>
+									{faculty.name}
+								</option>
+							)}
+						</For>
 					</select>
 				</div>
 			</div>

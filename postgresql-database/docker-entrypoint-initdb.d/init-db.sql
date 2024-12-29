@@ -17,6 +17,7 @@ CREATE TABLE university (
     location TEXT,
     main_ranking INTEGER,
     subject_ranking INTEGER,
+    application_fee INTEGER,
     application_deadline DATE,
     early_deadline DATE,
     is_gre_must BOOLEAN DEFAULT false,

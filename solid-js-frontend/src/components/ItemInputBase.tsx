@@ -1,13 +1,13 @@
 export default function ItemInputBase(props: any) {
 	return (
-		<div class="fixed top-0 left-0 h-screen w-screen bg-black/50 flex justify-center items-center">
-			<div class="min-w-96 p-8 bg-white">
-				<div class="text-base flex justify-end">
+		<div>
+			<div class="max-w-[1000px] p-8">
+				<div class="text-base flex justify-start mb-8">
 					<span
-						class="cursor-pointer hover:opacity-50"
+						class="cursor-pointer font-bold hover:opacity-50"
 						onClick={props.closeFunction}
 					>
-						Close
+						{"<- "}Back
 					</span>
 				</div>
 				<div>

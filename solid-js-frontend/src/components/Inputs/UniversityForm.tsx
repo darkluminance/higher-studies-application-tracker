@@ -19,6 +19,7 @@ export default function UniversityForm(
 			location: "",
 			main_ranking: 0,
 			subject_ranking: 0,
+			application_fee: 0,
 			application_deadline: "",
 			early_deadline: "",
 			is_gre_must: false,
@@ -139,6 +140,18 @@ export default function UniversityForm(
 						}
 					/>
 				</div>
+			</div>
+			<div class="block">
+				<label for="application_fee">Application Fee:</label>
+				<input
+					type="number"
+					id="application_fee"
+					value={data().application_fee as number}
+					class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
+					onInput={(e) =>
+						setData({ ...data(), application_fee: Number(e.target.value) })
+					}
+				/>
 			</div>
 			<div class="block grid grid-cols-2 gap-4">
 				<div>

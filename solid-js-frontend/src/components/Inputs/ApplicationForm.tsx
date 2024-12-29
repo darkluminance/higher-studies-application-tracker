@@ -93,6 +93,10 @@ export default function ApplicationForm(
 
 	createEffect(() => {
 		if (props?.editData) {
+			const lorCount = universities().find(
+				(uni) => uni.id === props.editData.university_id
+			)?.lor_count;
+			if (lorCount) setLorCount(lorCount);
 			setData(props.editData);
 		}
 	});
@@ -100,6 +104,7 @@ export default function ApplicationForm(
 	onMount(() => {
 		fetchApplicationStatusEnums();
 		fetchApplicationTypeEnums();
+		fetchFaculties();
 		fetchUniversities();
 		fetchRecommenders();
 		if (!props?.editData) resetForm();
@@ -146,9 +151,9 @@ export default function ApplicationForm(
 		if (res) {
 			setUserData("isFirstTime", false);
 			localStorage.setItem("isFirstTime", JSON.stringify(false));
-			toast.success("Successfully created application");
+			toast.success("Success");
 		} else {
-			toast.error("Could not create application");
+			toast.error("Could not submit data");
 		}
 
 		props?.fallback();
@@ -169,6 +174,12 @@ export default function ApplicationForm(
 								university_id: e.target.value,
 								shortlisted_faculties_id: [],
 								recommenders_id: [],
+								application_type: "PHD",
+								application_status: "NOT APPLIED",
+								language_score_submitted: false,
+								remarks: "",
+								gre_submitted: false,
+								gmat_submitted: false,
 							});
 							setLorCount(0);
 
@@ -183,11 +194,16 @@ export default function ApplicationForm(
 						}}
 					>
 						<option value="">Select a university</option>
-						{universities().map((uni) => (
-							<option value={uni.id} selected={data().university_id === uni.id}>
-								{uni.name}
-							</option>
-						))}
+						<For each={universities()}>
+							{(uni) => (
+								<option
+									value={uni.id}
+									selected={data().university_id === uni.id}
+								>
+									{uni.name}
+								</option>
+							)}
+						</For>
 					</select>
 				</div>
 			</div>
@@ -202,7 +218,14 @@ export default function ApplicationForm(
 					}
 				>
 					<For each={applicationTypeEnumValues()}>
-						{(value) => <option value={value}>{value}</option>}
+						{(value) => (
+							<option
+								value={value}
+								selected={data().application_type === value}
+							>
+								{value}
+							</option>
+						)}
 					</For>
 				</select>
 			</div>
@@ -225,36 +248,53 @@ export default function ApplicationForm(
 						Add Faculty
 					</button>
 				</div>
-				{data().shortlisted_faculties_id?.map((_, index) => (
-					<div class="flex gap-4 mt-2">
-						<select
-							class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
-							value={data().shortlisted_faculties_id[index]}
-							onChange={(e) => {
-								const newFaculties = [...data().shortlisted_faculties_id];
-								newFaculties[index] = e.target.value;
-								setData({ ...data(), shortlisted_faculties_id: newFaculties });
-							}}
-						>
-							<option value="">Select a faculty</option>
-							{faculties().map((faculty) => (
-								<option value={faculty.id}>{faculty.name}</option>
-							))}
-						</select>
-						<button
-							type="button"
-							class="hover:opacity-50"
-							onClick={() => {
-								const newFaculties = data().shortlisted_faculties_id.filter(
-									(_, i) => i !== index
-								);
-								setData({ ...data(), shortlisted_faculties_id: newFaculties });
-							}}
-						>
-							<RemoveIcon width="24px"></RemoveIcon>
-						</button>
-					</div>
-				))}
+				<For each={data().shortlisted_faculties_id}>
+					{(_, index) => (
+						<div class="flex gap-4 mt-2">
+							<select
+								class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
+								value={data().shortlisted_faculties_id[index()]}
+								onChange={(e) => {
+									const newFaculties = [...data().shortlisted_faculties_id];
+									newFaculties[index()] = e.target.value;
+									setData({
+										...data(),
+										shortlisted_faculties_id: newFaculties,
+									});
+								}}
+							>
+								<option value="">Select a faculty</option>
+								<For each={faculties()}>
+									{(faculty) => (
+										<option
+											value={faculty.id}
+											selected={
+												data().shortlisted_faculties_id[index()] === faculty.id
+											}
+										>
+											{faculty.name}
+										</option>
+									)}
+								</For>
+							</select>
+							<button
+								type="button"
+								class="hover:opacity-50"
+								onClick={() => {
+									const newFaculties = data().shortlisted_faculties_id.filter(
+										(_, i) => i !== index()
+									);
+									setData({
+										...data(),
+										shortlisted_faculties_id: newFaculties,
+									});
+								}}
+							>
+								<RemoveIcon width="24px"></RemoveIcon>
+							</button>
+						</div>
+					)}
+				</For>
 			</div>
 			<div class="block">
 				<label>Recommenders:</label>
@@ -273,9 +313,18 @@ export default function ApplicationForm(
 									});
 								}}
 							>
-								{recommenders().map((recommender) => (
-									<option value={recommender.id}>{recommender.name}</option>
-								))}
+								<For each={recommenders()}>
+									{(recommender) => (
+										<option
+											value={recommender.id}
+											selected={
+												data().recommenders_id[index()] === recommender.id
+											}
+										>
+											{recommender.name}
+										</option>
+									)}
+								</For>
 							</select>
 						</div>
 					)}
@@ -292,7 +341,14 @@ export default function ApplicationForm(
 					}
 				>
 					<For each={applicationStatusEnumValues()}>
-						{(value) => <option value={value}>{value}</option>}
+						{(value) => (
+							<option
+								value={value}
+								selected={data().application_status === value}
+							>
+								{value}
+							</option>
+						)}
 					</For>
 				</select>
 			</div>

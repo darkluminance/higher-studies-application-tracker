@@ -18,6 +18,7 @@ func (apiConfig *apiConfig) handlerCreateUniversity(w http.ResponseWriter, r *ht
 		Location                     string    `json:"location"`
 		MainRanking                  int       `json:"main_ranking"`
 		SubjectRanking               int       `json:"subject_ranking"`
+		ApplicationFee               int       `json:"application_fee"`
 		ApplicationDeadline          time.Time `json:"application_deadline"`
 		EarlyDeadline                time.Time `json:"early_deadline"`
 		IsGreMust                    bool      `json:"is_gre_must"`
@@ -43,6 +44,7 @@ func (apiConfig *apiConfig) handlerCreateUniversity(w http.ResponseWriter, r *ht
 		Location:                     ToNullString(params.Location),
 		MainRanking:                  ToNullInt(params.MainRanking),
 		SubjectRanking:               ToNullInt(params.SubjectRanking),
+		ApplicationFee:               ToNullInt(params.ApplicationFee),
 		ApplicationDeadline:          ToNullTime(params.ApplicationDeadline),
 		EarlyDeadline:                ToNullTime(params.EarlyDeadline),
 		IsGreMust:                    ToNullBoolean(params.IsGreMust),
@@ -69,6 +71,7 @@ func (apiConfig *apiConfig) handlerUpdateUniversityByID(w http.ResponseWriter, r
 		Location                     string    `json:"location"`
 		MainRanking                  int       `json:"main_ranking"`
 		SubjectRanking               int       `json:"subject_ranking"`
+		ApplicationFee               int       `json:"application_fee"`
 		ApplicationDeadline          time.Time `json:"application_deadline"`
 		EarlyDeadline                time.Time `json:"early_deadline"`
 		IsGreMust                    bool      `json:"is_gre_must"`
@@ -94,6 +97,7 @@ func (apiConfig *apiConfig) handlerUpdateUniversityByID(w http.ResponseWriter, r
 		Location:                     ToNullString(params.Location),
 		MainRanking:                  ToNullInt(params.MainRanking),
 		SubjectRanking:               ToNullInt(params.SubjectRanking),
+		ApplicationFee:               ToNullInt(params.ApplicationFee),
 		ApplicationDeadline:          ToNullTime(params.ApplicationDeadline),
 		EarlyDeadline:                ToNullTime(params.EarlyDeadline),
 		IsGreMust:                    ToNullBoolean(params.IsGreMust),

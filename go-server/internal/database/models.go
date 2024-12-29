@@ -194,7 +194,9 @@ type Recommender struct {
 }
 
 type RecommenderStatus struct {
-	Recommender    uuid.UUID
+	ID             uuid.UUID
+	UniversityID   uuid.UUID
+	RecommenderID  uuid.UUID
 	IsLorSubmitted bool
 	UserID         uuid.UUID
 }
@@ -207,6 +209,7 @@ type University struct {
 	Location                     sql.NullString
 	MainRanking                  sql.NullInt32
 	SubjectRanking               sql.NullInt32
+	ApplicationFee               sql.NullInt32
 	ApplicationDeadline          sql.NullTime
 	EarlyDeadline                sql.NullTime
 	IsGreMust                    sql.NullBool

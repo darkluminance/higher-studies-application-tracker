@@ -75,6 +75,7 @@ type University struct {
 	Location                     string    `json:"location"`
 	MainRanking                  int       `json:"main_ranking"`
 	SubjectRanking               int       `json:"subject_ranking"`
+	ApplicationFee               int       `json:"application_fee"`
 	ApplicationDeadline          time.Time `json:"application_deadline"`
 	EarlyDeadline                time.Time `json:"early_deadline"`
 	IsGreMust                    bool      `json:"is_gre_must"`
@@ -125,6 +126,7 @@ func databaseUniversityToUniversity(databaseUniversity database.University) Univ
 		Location:                     databaseUniversity.Location.String,
 		MainRanking:                  int(databaseUniversity.MainRanking.Int32),
 		SubjectRanking:               int(databaseUniversity.SubjectRanking.Int32),
+		ApplicationFee:               int(databaseUniversity.ApplicationFee.Int32),
 		ApplicationDeadline:          databaseUniversity.ApplicationDeadline.Time,
 		EarlyDeadline:                databaseUniversity.EarlyDeadline.Time,
 		IsGreMust:                    databaseUniversity.IsGreMust.Bool,

@@ -2,6 +2,7 @@ import { createSignal, For, Show } from "solid-js";
 import { Universities } from "../models/University";
 import RemoveIcon from "./Icons/RemoveIcon";
 import { Faculties } from "../models/Faculty";
+import { Recommenders } from "../models/Recommender";
 
 export default function DynamicTable(props: {
 	data: any;
@@ -9,6 +10,7 @@ export default function DynamicTable(props: {
 	deleteFunction: Function;
 	universityList?: Universities[];
 	facultyList?: Faculties[];
+	recommenderList?: Recommenders[];
 }) {
 	const { data } = props;
 	const [showDeleteButton, setShowDeleteButton] = createSignal();
@@ -36,21 +38,54 @@ export default function DynamicTable(props: {
 	});
 
 	const formattedData = (
-		val: string | number | boolean | null,
+		val: string | string[] | number | boolean | null,
 		header: string
 	) => {
 		let returnValue = val?.toString();
 
 		if (header === "university_id" && props.universityList) {
 			const university = props.universityList.filter(
-				(uni: any) => uni.id === val
+				(item: any) => item.id === val
 			)[0];
 			returnValue = university?.name;
 		}
 
 		if (header === "faculty_id" && props.facultyList) {
-			const faculty = props.facultyList.filter((uni: any) => uni.id === val)[0];
+			const faculty = props.facultyList.filter(
+				(item: any) => item.id === val
+			)[0];
 			returnValue = faculty?.name;
+		}
+
+		if (header === "recommender_id" && props.recommenderList) {
+			const recommender = props.recommenderList.filter(
+				(item: any) => item.id === val
+			)[0];
+			returnValue = recommender?.name;
+		}
+
+		if (header === "recommenders_id" && props.recommenderList) {
+			const recommenders = (val as string[])?.map(
+				(recommenderId: string) =>
+					props.recommenderList!.filter(
+						(item: Recommenders) => item.id === recommenderId
+					)[0]
+			);
+			returnValue = recommenders
+				.map((recommender: Recommenders) => recommender?.name)
+				.join(", ");
+		}
+
+		if (header === "shortlisted_faculties_id" && props.facultyList) {
+			const faculties = (val as string[])?.map(
+				(facultyId: string) =>
+					props.facultyList!.filter(
+						(item: Faculties) => item.id === facultyId
+					)[0]
+			);
+			returnValue = faculties
+				.map((faculty: Faculties) => faculty?.name)
+				.join(", ");
 		}
 
 		return returnValue;
