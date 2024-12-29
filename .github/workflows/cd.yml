@@ -13,7 +13,7 @@ jobs:
     steps:
       - name: Navigate to dir
         run: |
-          cd /home/ubuntu/myapps
+          cd /home/ubuntu/myapps/higher-studies-application-tracker
           git fetch
           git pull
 
