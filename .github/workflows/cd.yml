@@ -13,6 +13,7 @@ jobs:
     runs-on: self-hosted
 
     steps:
+    - uses: actions/checkout@v4
     - name: Pull Docker backend
       run: sudo docker pull ryedae/higher-studies-application-tracker_backend:latest
     - name: Pull Docker frontend
