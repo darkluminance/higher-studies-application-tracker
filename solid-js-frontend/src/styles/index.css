@@ -42,3 +42,14 @@ textarea {
 	background-color: transparent;
 	border-color: #ccc;
 }
+
+.tracker-header::before {
+	content: "";
+	background-image: url("../assets/plane.png");
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
+
+	height: 60px;
+	width: 60px;
+}

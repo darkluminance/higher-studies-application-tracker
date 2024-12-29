@@ -41,8 +41,14 @@ export default function Login() {
 		}
 	};
 	return (
-		<div class="flex h-screen items-center justify-center bg-gray-50 text-gray-600">
-			<div class="w-full max-w-md p-10 bg-white rounded-lg shadow-md">
+		<div class="flex flex-col h-screen items-center justify-center bg-gray-50 text-gray-600">
+			<div class="text-4xl flex flex-row items-center gap-4 mb-4 tracker-header">
+				Higher Studies Application Tracker
+			</div>
+			<p class="text-xl font-thin ">
+				Track the journey to your dream destination in one place
+			</p>
+			<div class="w-full mt-8 max-w-md p-10 bg-white rounded-lg shadow-md">
 				<h1 class="text-xl font-semibold mb-4">SIGN IN</h1>
 				<form class="space-y-5" onSubmit={handleSubmit}>
 					<label class="block">
@@ -50,6 +56,7 @@ export default function Login() {
 						<input
 							type="text"
 							name="username"
+							required
 							class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
 						/>
 					</label>
@@ -58,6 +65,7 @@ export default function Login() {
 						<input
 							type="password"
 							name="password"
+							required
 							class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
 						/>
 					</label>
@@ -67,7 +75,7 @@ export default function Login() {
 					href="/register"
 					class="block text-center text-sm text-gray-500 hover:text-gray-600 mt-4"
 				>
-					Don't have an account? Register here.
+					Don't have an account? <strong>Register here</strong>
 				</a>
 			</div>
 		</div>

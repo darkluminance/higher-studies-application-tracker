@@ -31,8 +31,14 @@ export default function Register() {
 		setLoading(false);
 	};
 	return (
-		<div class="flex h-screen items-center justify-center bg-gray-50 text-gray-600">
-			<div class="w-full max-w-md p-10 bg-white rounded-lg shadow-md">
+		<div class="flex flex-col h-screen items-center justify-center bg-gray-50 text-gray-600">
+			<div class="text-4xl flex flex-row items-center gap-4 mb-4 tracker-header">
+				Higher Studies Application Tracker
+			</div>
+			<p class="text-xl font-thin ">
+				Track the journey to your dream destination in one place
+			</p>
+			<div class="w-full max-w-md p-10 bg-white rounded-lg shadow-md mt-8">
 				<h1 class="text-xl font-semibold mb-4">SIGN UP</h1>
 				<form class="space-y-5" onSubmit={handleSubmit}>
 					<label class="block">
@@ -78,7 +84,7 @@ export default function Register() {
 					href="/login"
 					class="block text-center text-sm text-gray-500 hover:text-gray-600 mt-4"
 				>
-					Already have an account? Login here.
+					Already have an account? <strong>Login here</strong>
 				</a>
 			</div>
 		</div>

@@ -22,7 +22,7 @@ export default function Topbar() {
 
 	return (
 		<div class="w-full p-4 text-xl bg-gray-900 text-white flex justify-between">
-			<span>{userdata().name}</span>
+			<span>Welcome, {userdata().name}</span>
 			<span onClick={handleLogout} class="cursor-pointer hover:opacity-50">
 				Logout
 			</span>

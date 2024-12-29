@@ -24,6 +24,18 @@ func (apiConfig *apiConfig) handlerCreateUser(w http.ResponseWriter, r *http.Req
 		return
 	}
 
+	userexists, _ := apiConfig.DB.GetUserByUsername(r.Context(), params.Username)
+	if userexists.Username == params.Username {
+		respondWithError(w, http.StatusConflict, "Username already exists")
+		return
+	}
+
+	emailexists, _ := apiConfig.DB.GetUserByEmail(r.Context(), params.Email)
+	if emailexists.Email == params.Email {
+		respondWithError(w, http.StatusConflict, "Email already exists")
+		return
+	}
+
 	user, err := apiConfig.DB.CreateUser(r.Context(), database.CreateUserParams{
 		Name:     params.Name,
 		Username: params.Username,
@@ -79,6 +91,12 @@ func (apiConfig *apiConfig) handlerGetUserByUsernameAndPassword(w http.ResponseW
 
 	username := credentials[0]
 	password := credentials[1]
+
+	userexists, _ := apiConfig.DB.GetUserByUsername(r.Context(), username)
+	if userexists.Username != username {
+		respondWithError(w, http.StatusConflict, "User doesn't exist")
+		return
+	}
 
 	user, err := apiConfig.DB.GetUserByUsernameAndPassword(r.Context(), database.GetUserByUsernameAndPasswordParams{
 		Username: username,
