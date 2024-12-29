@@ -40,7 +40,9 @@ jobs:
         echo "DB_DATABASE=${{ secrets.DB_DATABASE }}" >> .env
 
     - name: Remove previous container
-      run: sudo docker compose down
+      run: |
+        echo y | sudo docker system prune -a
+        sudo docker compose down
       
     - name: Run Docker Container
       run: sudo docker compose -f ./docker-compose.yml up -d 
