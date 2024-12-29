@@ -19,7 +19,7 @@ jobs:
           sudo git pull
 
       - name: Remove previous container
-        run: sudo docker compose down
+        run: sudo docker compose -f /home/ubuntu/myapps/higher-studies-application-tracker/docker-compose.yml down
 
       - name: Run Docker Container
-        run: sudo docker compose up --build
+        run: sudo docker compose -f /home/ubuntu/myapps/higher-studies-application-tracker/docker-compose.yml up --build
