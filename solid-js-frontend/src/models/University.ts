@@ -6,6 +6,7 @@ export type Universities = {
 	location: string;
 	main_ranking: number | null;
 	subject_ranking: number | null;
+	application_fee: number;
 	application_deadline: string;
 	early_deadline: string;
 	is_gre_must: boolean | string;
@@ -14,6 +15,7 @@ export type Universities = {
 	is_official_transcript_required: boolean | string;
 	is_transcript_needs_evaluation: boolean | string;
 	accepted_evaluations: string[];
+	remarks: string;
 	created_at?: Date;
 	updated_at?: Date;
 };

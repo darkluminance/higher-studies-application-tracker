@@ -12,6 +12,48 @@ import (
 	"github.com/google/uuid"
 )
 
+type ApplicationTypeEnum string
+
+const (
+	ApplicationTypeEnumMASTERS ApplicationTypeEnum = "MASTERS"
+	ApplicationTypeEnumPHD     ApplicationTypeEnum = "PHD"
+)
+
+func (e *ApplicationTypeEnum) Scan(src interface{}) error {
+	switch s := src.(type) {
+	case []byte:
+		*e = ApplicationTypeEnum(s)
+	case string:
+		*e = ApplicationTypeEnum(s)
+	default:
+		return fmt.Errorf("unsupported scan type for ApplicationTypeEnum: %T", src)
+	}
+	return nil
+}
+
+type NullApplicationTypeEnum struct {
+	ApplicationTypeEnum ApplicationTypeEnum
+	Valid               bool // Valid is true if ApplicationTypeEnum is not NULL
+}
+
+// Scan implements the Scanner interface.
+func (ns *NullApplicationTypeEnum) Scan(value interface{}) error {
+	if value == nil {
+		ns.ApplicationTypeEnum, ns.Valid = "", false
+		return nil
+	}
+	ns.Valid = true
+	return ns.ApplicationTypeEnum.Scan(value)
+}
+
+// Value implements the driver Valuer interface.
+func (ns NullApplicationTypeEnum) Value() (driver.Value, error) {
+	if !ns.Valid {
+		return nil, nil
+	}
+	return string(ns.ApplicationTypeEnum), nil
+}
+
 type ReplyVibeEnum string
 
 const (
@@ -134,6 +176,7 @@ type Mail struct {
 	IsMailReplied        sql.NullBool
 	ReplyVibe            NullReplyVibeEnum
 	IsInterviewRequested sql.NullBool
+	Remarks              sql.NullString
 	CreatedAt            sql.NullTime
 	UpdatedAt            sql.NullTime
 }
@@ -151,7 +194,9 @@ type Recommender struct {
 }
 
 type RecommenderStatus struct {
-	Recommender    uuid.UUID
+	ID             uuid.UUID
+	UniversityID   uuid.UUID
+	RecommenderID  uuid.UUID
 	IsLorSubmitted bool
 	UserID         uuid.UUID
 }
@@ -164,6 +209,7 @@ type University struct {
 	Location                     sql.NullString
 	MainRanking                  sql.NullInt32
 	SubjectRanking               sql.NullInt32
+	ApplicationFee               sql.NullInt32
 	ApplicationDeadline          sql.NullTime
 	EarlyDeadline                sql.NullTime
 	IsGreMust                    sql.NullBool
@@ -172,6 +218,7 @@ type University struct {
 	IsOfficialTranscriptRequired sql.NullBool
 	IsTranscriptNeedsEvaluation  sql.NullBool
 	AcceptedEvaluations          []string
+	Remarks                      sql.NullString
 	CreatedAt                    sql.NullTime
 	UpdatedAt                    sql.NullTime
 }
@@ -182,10 +229,12 @@ type UniversityApplication struct {
 	UniversityID           uuid.UUID
 	ShortlistedFacultiesID []uuid.UUID
 	RecommendersID         []uuid.UUID
+	ApplicationType        NullApplicationTypeEnum
 	ApplicationStatus      NullUniversityApplicationStatusEnum
 	LanguageScoreSubmitted sql.NullBool
 	GreSubmitted           sql.NullBool
 	GmatSubmitted          sql.NullBool
+	Remarks                sql.NullString
 	CreatedAt              sql.NullTime
 	UpdatedAt              sql.NullTime
 }

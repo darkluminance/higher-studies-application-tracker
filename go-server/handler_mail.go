@@ -16,6 +16,7 @@ func (apiConfig *apiConfig) handlerCreateMail(w http.ResponseWriter, r *http.Req
 		IsMailReplied        bool      `json:"is_mail_replied"`
 		ReplyVibe            string    `json:"reply_vibe"`
 		IsInterviewRequested bool      `json:"is_interview_requested"`
+		Remarks              string    `json:"remarks"`
 	}
 	params := parameters{}
 
@@ -32,6 +33,7 @@ func (apiConfig *apiConfig) handlerCreateMail(w http.ResponseWriter, r *http.Req
 		IsMailReplied:        ToNullBoolean(params.IsMailReplied),
 		ReplyVibe:            ToNullReplyVibeEnum(params.ReplyVibe),
 		IsInterviewRequested: ToNullBoolean(params.IsInterviewRequested),
+		Remarks:              ToNullString(params.Remarks),
 	})
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, fmt.Sprintf("Couldn't create mail: %v", err))
@@ -85,6 +87,7 @@ func (apiConfig *apiConfig) handlerUpdateMailByID(w http.ResponseWriter, r *http
 		IsMailReplied        bool      `json:"is_mail_replied"`
 		ReplyVibe            string    `json:"reply_vibe"`
 		IsInterviewRequested bool      `json:"is_interview_requested"`
+		Remarks              string    `json:"remarks"`
 	}
 	params := parameters{}
 
@@ -101,6 +104,7 @@ func (apiConfig *apiConfig) handlerUpdateMailByID(w http.ResponseWriter, r *http
 		IsMailReplied:        ToNullBoolean(params.IsMailReplied),
 		ReplyVibe:            ToNullReplyVibeEnum(params.ReplyVibe),
 		IsInterviewRequested: ToNullBoolean(params.IsInterviewRequested),
+		Remarks:              ToNullString(params.Remarks),
 	})
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, fmt.Sprintf("Couldn't update mail: %v", err))

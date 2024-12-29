@@ -19,6 +19,7 @@ export default function UniversityForm(
 			location: "",
 			main_ranking: 0,
 			subject_ranking: 0,
+			application_fee: 0,
 			application_deadline: "",
 			early_deadline: "",
 			is_gre_must: false,
@@ -26,6 +27,7 @@ export default function UniversityForm(
 			lor_count: 0,
 			is_official_transcript_required: false,
 			is_transcript_needs_evaluation: false,
+			remarks: "",
 			accepted_evaluations: [],
 		};
 		setData(settingData);
@@ -112,7 +114,7 @@ export default function UniversityForm(
 					onInput={(e) => setData({ ...data(), location: e.target.value })}
 				/>
 			</div>
-			<div class="block flex gap-8">
+			<div class="block grid grid-cols-2 gap-4">
 				<div>
 					<label for="main_ranking">Ranking:</label>
 					<input
@@ -140,38 +142,52 @@ export default function UniversityForm(
 				</div>
 			</div>
 			<div class="block">
-				<label for="application_deadline">Application Deadline:</label>
+				<label for="application_fee">Application Fee:</label>
 				<input
-					type="string"
-					placeholder="YYYY-MM-DD"
-					id="application_deadline"
-					required
-					value={data().application_deadline}
+					type="number"
+					id="application_fee"
+					value={data().application_fee as number}
 					class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
 					onInput={(e) =>
-						setData({
-							...data(),
-							application_deadline: e.target.value,
-						})
+						setData({ ...data(), application_fee: Number(e.target.value) })
 					}
 				/>
 			</div>
-			<div class="block">
-				<label for="early_deadline">Priority Deadline:</label>
-				<input
-					type="string"
-					placeholder="YYYY-MM-DD"
-					id="early_deadline"
-					required
-					value={data().early_deadline}
-					class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
-					onInput={(e) =>
-						setData({
-							...data(),
-							early_deadline: e.target.value,
-						})
-					}
-				/>
+			<div class="block grid grid-cols-2 gap-4">
+				<div>
+					<label for="application_deadline">Application Deadline:</label>
+					<input
+						type="string"
+						placeholder="YYYY-MM-DD"
+						id="application_deadline"
+						required
+						value={data().application_deadline}
+						class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
+						onInput={(e) =>
+							setData({
+								...data(),
+								application_deadline: e.target.value,
+							})
+						}
+					/>
+				</div>
+				<div>
+					<label for="early_deadline">Priority Deadline:</label>
+					<input
+						type="string"
+						placeholder="YYYY-MM-DD"
+						id="early_deadline"
+						required
+						value={data().early_deadline}
+						class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
+						onInput={(e) =>
+							setData({
+								...data(),
+								early_deadline: e.target.value,
+							})
+						}
+					/>
+				</div>
 			</div>
 			<div class="block">
 				<label for="lor_count">LOR count:</label>
@@ -275,6 +291,16 @@ export default function UniversityForm(
 							accepted_evaluations: e.target.value.replace(" ", "").split(","),
 						})
 					}
+				/>
+			</div>
+			<div class="block">
+				<textarea
+					id="remarks"
+					placeholder="Remarks"
+					value={data().remarks}
+					class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
+					rows="2"
+					onInput={(e) => setData({ ...data(), remarks: e.target.value })}
 				/>
 			</div>
 			<LoadingButton loading={loading()} text="Submit" />

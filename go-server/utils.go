@@ -38,6 +38,13 @@ func ToNullApplicationStatusEnum(s string) database.NullUniversityApplicationSta
 	return database.NullUniversityApplicationStatusEnum{UniversityApplicationStatusEnum: database.UniversityApplicationStatusEnum(s), Valid: true}
 }
 
+func ToNullApplicationTypeEnum(s string) database.NullApplicationTypeEnum {
+	if s == "" {
+		return database.NullApplicationTypeEnum{Valid: false}
+	}
+	return database.NullApplicationTypeEnum{ApplicationTypeEnum: database.ApplicationTypeEnum(s), Valid: true}
+}
+
 func convertStringArrayToUUIDArray(id_list []string) []uuid.UUID {
 	var ids []uuid.UUID
 	for _, id := range id_list {

@@ -14,12 +14,12 @@ body {
 		sans-serif;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
-	min-height: 100vh;
+	height: 100vh;
 	background-color: #eee;
 }
 
 #root {
-	min-height: 100vh;
+	height: 100%;
 }
 
 code {
@@ -34,4 +34,11 @@ code {
 
 a:hover {
 	text-decoration: underline;
+}
+
+input,
+select,
+textarea {
+	background-color: transparent;
+	border-color: #ccc;
 }

@@ -33,57 +33,60 @@ export default function BaseAllEntries(props: any) {
 	});
 
 	return (
-		<>
-			<div class="px-8 py-4">
-				<div class="flex justify-between">
-					<h1 class="text-xl">{props.title} </h1>
-					<button
-						class="px-4 py-2 bg-cyan-500 text-white rounded-md hover:bg-cyan-600 focus:outline-none"
-						onClick={() => {
-							setShowItemInputter(true);
-							setEditData();
-						}}
-					>
-						Add +
-					</button>
-				</div>
-				<Show when={props.data}>
-					<Show when={props.filterList}>
-						<div class="mt-4">
-							<label for="designation">{props.filterByTitle}:</label>
-							<div class="flex gap-4">
-								<select
-									class="w-96 px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
-									value={props.filterID || ""}
-									onChange={(e) => {
-										if (e.target.value !== "")
-											props.handleFilterChange({
-												[props.filterKey]: e.target.value,
-											});
-										else props.handleFilterChange();
-									}}
-								>
-									<option selected value="">
-										All
-									</option>
-									{props.filterList.map(
-										(item: { id: string; name: string }) => (
-											<option value={item.id}>{item.name}</option>
-										)
-									)}
-								</select>
+		<div class="px-8 py-4">
+			<Show when={!showItemInputter()}>
+				<div>
+					<div class="flex justify-between">
+						<h1 class="text-xl">{props.title} </h1>
+						<button
+							class="px-4 py-2 bg-cyan-500 text-white rounded-md hover:bg-cyan-600 focus:outline-none"
+							onClick={() => {
+								setShowItemInputter(true);
+								setEditData();
+							}}
+						>
+							Add +
+						</button>
+					</div>
+					<Show when={props.data}>
+						<Show when={props.filterList}>
+							<div class="mt-4">
+								<label for="designation">{props.filterByTitle}:</label>
+								<div class="flex gap-4">
+									<select
+										class="w-96 px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
+										value={props.filterID || ""}
+										onChange={(e) => {
+											if (e.target.value !== "")
+												props.handleFilterChange({
+													[props.filterKey]: e.target.value,
+												});
+											else props.handleFilterChange();
+										}}
+									>
+										<option selected value="">
+											All
+										</option>
+										{props.filterList.map(
+											(item: { id: string; name: string }) => (
+												<option value={item.id}>{item.name}</option>
+											)
+										)}
+									</select>
+								</div>
 							</div>
-						</div>
+						</Show>
+						<DynamicTable
+							data={props.data}
+							setEditData={(val: any) => handleEdit(val)}
+							deleteFunction={props.handleDelete}
+							universityList={props.universityList}
+							facultyList={props.facultyList}
+							recommenderList={props.recommenderList}
+						></DynamicTable>
 					</Show>
-					<DynamicTable
-						data={props.data}
-						setEditData={(val: any) => handleEdit(val)}
-						deleteFunction={props.handleDelete}
-						universityList={props.universityList}
-						facultyList={props.facultyList}
-					></DynamicTable>
-				</Show>
-			</div>
+				</div>
+			</Show>
 			<Show when={showItemInputter()}>
 				<ItemInputBase
 					closeFunction={() => {
@@ -95,6 +98,6 @@ export default function BaseAllEntries(props: any) {
 					fallback={handleCompleteSubmit}
 				></ItemInputBase>
 			</Show>
-		</>
+		</div>
 	);
 }

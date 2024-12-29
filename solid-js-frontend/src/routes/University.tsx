@@ -61,43 +61,45 @@ function UniversityComponent() {
 
 	return (
 		<>
-			<div class="px-8 py-4">
-				<div class=" flex justify-between">
-					<h1 class="text-xl">Universities </h1>
-					<button
-						class="px-4 py-2 bg-cyan-500 text-white rounded-md hover:bg-cyan-600 focus:outline-none"
-						onClick={() => setShowItemInputter(true)}
-					>
-						Add +
-					</button>
+			<Show when={!showItemInputter()}>
+				<div class="px-8 py-4">
+					<div class=" flex justify-between">
+						<h1 class="text-xl">Universities </h1>
+						<button
+							class="px-4 py-2 bg-cyan-500 text-white rounded-md hover:bg-cyan-600 focus:outline-none"
+							onClick={() => setShowItemInputter(true)}
+						>
+							Add +
+						</button>
+					</div>
+					<Show when={universities()}>
+						<DynamicTable
+							data={universities()}
+							setEditData={(val: Universities) => {
+								val.application_deadline = new Date(val.application_deadline)
+									.toISOString()
+									.split("T")[0];
+								val.early_deadline = new Date(val.early_deadline)
+									.toISOString()
+									.split("T")[0];
+
+								const { created_at, updated_at, ...item } = val;
+
+								item.is_gmat_must = item.is_gmat_must === "YES";
+								item.is_gre_must = item.is_gre_must === "YES";
+								item.is_official_transcript_required =
+									item.is_official_transcript_required === "YES";
+								item.is_transcript_needs_evaluation =
+									item.is_transcript_needs_evaluation === "YES";
+
+								setEditData(item);
+								setShowItemInputter(true);
+							}}
+							deleteFunction={handleDeleteUniversity}
+						></DynamicTable>
+					</Show>
 				</div>
-				<Show when={universities()}>
-					<DynamicTable
-						data={universities()}
-						setEditData={(val: Universities) => {
-							val.application_deadline = new Date(val.application_deadline)
-								.toISOString()
-								.split("T")[0];
-							val.early_deadline = new Date(val.early_deadline)
-								.toISOString()
-								.split("T")[0];
-
-							const { created_at, updated_at, ...item } = val;
-
-							item.is_gmat_must = item.is_gmat_must === "YES";
-							item.is_gre_must = item.is_gre_must === "YES";
-							item.is_official_transcript_required =
-								item.is_official_transcript_required === "YES";
-							item.is_transcript_needs_evaluation =
-								item.is_transcript_needs_evaluation === "YES";
-
-							setEditData(item);
-							setShowItemInputter(true);
-						}}
-						deleteFunction={handleDeleteUniversity}
-					></DynamicTable>
-				</Show>
-			</div>
+			</Show>
 
 			<Show when={showItemInputter()}>
 				<ItemInputBase
