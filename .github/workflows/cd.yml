@@ -22,4 +22,4 @@ jobs:
         run: sudo docker compose -f /home/ubuntu/myapps/higher-studies-application-tracker/docker-compose.yml down
 
       - name: Run Docker Container
-        run: sudo docker compose -f /home/ubuntu/myapps/higher-studies-application-tracker/docker-compose.yml up --build
+        run: sudo docker compose -f /home/ubuntu/myapps/higher-studies-application-tracker/docker-compose.yml up -d --build
