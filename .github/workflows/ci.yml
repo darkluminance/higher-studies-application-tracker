@@ -15,8 +15,17 @@ jobs:
     - name: Login to Dockerhub
       run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login --username "${{ secrets.DOCKER_USERNAME }}" --password-stdin
       
-    - name: Build the Docker image
-      run: docker compose build
+    - name: Build and Push Backend Image
+      run: |
+        docker compose build backend
+        docker push ryedae/higher-studies-application-tracker_backend:latest
 
-    - name: Push to Docker
-      run: docker push ryedae/higher-studies-application-tracker:latest
+    - name: Build and Push Frontend Image
+      run: |
+        docker compose build frontend
+        docker push ryedae/higher-studies-application-tracker_frontend:latest
+
+    - name: Build and Push Database Image
+      run: |
+        docker compose build db
+        docker push ryedae/higher-studies-application-tracker_db:latest
