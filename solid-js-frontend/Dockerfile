@@ -1,4 +1,4 @@
-FROM oven/bun:1
+FROM oven/bun:latest AS builder
 
 WORKDIR /app
 
@@ -6,8 +6,17 @@ COPY package.json ./
 
 RUN bun install
 
-COPY src ./src
+COPY . .
 
-EXPOSE 3000
+RUN bun run build
 
-CMD ["bun", "run", "start", "--host"]
+FROM nginx:alpine
+
+COPY --from=builder /app/dist /usr/share/nginx/html
+
+# Copy custom Nginx config if needed
+# COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]
