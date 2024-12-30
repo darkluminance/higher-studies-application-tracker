@@ -66,8 +66,8 @@ function HomeTimeline() {
 							<h2
 								class={
 									timelineItem.type === "University"
-										? "text-gray-700 truncate leading-normal font-medium text-3xl "
-										: "text-gray-700 truncate leading-normal font-medium text-4xl"
+										? "text-gray-700 truncate leading-normal font-medium text-4xl "
+										: "text-gray-700 truncate leading-normal font-medium text-3xl"
 								}
 							>
 								{timelineItem.name}
