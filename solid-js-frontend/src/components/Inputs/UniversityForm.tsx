@@ -119,6 +119,7 @@ export default function UniversityForm(
 					<label for="main_ranking">Ranking:</label>
 					<input
 						type="number"
+						min="0"
 						id="main_ranking"
 						value={data().main_ranking as number}
 						class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
