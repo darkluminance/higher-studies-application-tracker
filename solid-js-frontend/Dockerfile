@@ -6,10 +6,8 @@ COPY package.json ./
 
 RUN bun install
 
-COPY . .
-
-RUN bun run build
+COPY src ./src
 
 EXPOSE 3000
 
-CMD ["bun", "run", "serve", "--host"]
+CMD ["bun", "run", "dev", "--host"]
