@@ -133,6 +133,7 @@ export default function UniversityForm(
 					<label for="subject_ranking">Subject Ranking:</label>
 					<input
 						type="number"
+						min="0"
 						id="subject_ranking"
 						value={data().subject_ranking as number}
 						class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
@@ -146,6 +147,7 @@ export default function UniversityForm(
 				<label for="application_fee">Application Fee:</label>
 				<input
 					type="number"
+					min="0"
 					id="application_fee"
 					value={data().application_fee as number}
 					class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
@@ -194,6 +196,7 @@ export default function UniversityForm(
 				<label for="lor_count">LOR count:</label>
 				<input
 					type="number"
+					min="0"
 					id="lor_count"
 					value={data().lor_count}
 					class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
