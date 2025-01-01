@@ -36,7 +36,14 @@ export const fetchData = async (url: string, data: object | null = null) => {
 			} else if (ret.status === HttpStatus.CONFLICT) {
 				toast.error(res.error);
 			}
+
 			throw new Error(`HTTP error! status: ${ret.status}`);
+		}
+
+		if (ret.status === HttpStatus.CREATED) {
+			toast.success("Successfully created");
+		} else if (ret.status === HttpStatus.NO_CONTENT) {
+			toast.success("No data found");
 		}
 
 		return res ? (res.data ? res.data : res) : [];
