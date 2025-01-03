@@ -105,6 +105,15 @@ type UniversityApplication struct {
 	UpdatedAt              time.Time   `json:"updated_at"`
 }
 
+type RecommendationStatus struct {
+	ID             uuid.UUID `json:"id"`
+	UserID         uuid.UUID `json:"user_id"`
+	Name           string    `json:"name"`
+	ApplicationID  uuid.UUID `json:"application_id"`
+	RecommenderID  uuid.UUID `json:"recommender_id"`
+	IsLorSubmitted bool      `json:"is_lor_submitted"`
+}
+
 // Functions
 func databaseUserToUser(databaseUser database.User) User {
 	return User{
@@ -213,5 +222,16 @@ func databaseUniversityApplicationToUniversityApplication(databaseApplication da
 		Remarks:                databaseApplication.Remarks.String,
 		CreatedAt:              databaseApplication.CreatedAt.Time,
 		UpdatedAt:              databaseApplication.UpdatedAt.Time,
+	}
+}
+
+func databaseRecommendationStatusToRecommendationStatus(databaseRecommendationStatus database.GetRecommendationStatusByUniversityApplicationIdRow) RecommendationStatus {
+	return RecommendationStatus{
+		ID:             databaseRecommendationStatus.ID,
+		UserID:         databaseRecommendationStatus.UserID,
+		Name:           databaseRecommendationStatus.Name.String,
+		ApplicationID:  databaseRecommendationStatus.ApplicationID,
+		RecommenderID:  databaseRecommendationStatus.RecommenderID,
+		IsLorSubmitted: databaseRecommendationStatus.IsLorSubmitted,
 	}
 }

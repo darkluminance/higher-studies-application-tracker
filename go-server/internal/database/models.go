@@ -195,7 +195,7 @@ type Recommender struct {
 
 type RecommenderStatus struct {
 	ID             uuid.UUID
-	UniversityID   uuid.UUID
+	ApplicationID  uuid.UUID
 	RecommenderID  uuid.UUID
 	IsLorSubmitted bool
 	UserID         uuid.UUID

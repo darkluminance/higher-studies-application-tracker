@@ -99,6 +99,10 @@ func main() {
 	v1Router.Post("/applications/get", apiCfg.middlewareAuth(apiCfg.handlerGetUniversityApplicationByID))
 	v1Router.Post("/applications/delete", apiCfg.middlewareAuth(apiCfg.handlerDeleteUniversityApplicationByID))
 
+	v1Router.Post("/recommendation_status/university/get", apiCfg.middlewareAuth(apiCfg.handlerGetUniversityRecommendationStatus))
+	v1Router.Post("/recommendation_status/university/name/get", apiCfg.middlewareAuth(apiCfg.handlerGetUniversityNameByApplicationID))
+	v1Router.Post("/recommendation_status/university/update", apiCfg.middlewareAuth(apiCfg.handlerUpdateRecommenderStatusByID))
+
 	v1Router.Get("/timeline/user/get", apiCfg.middlewareAuth(apiCfg.handlerGetUserTimeline))
 
 	v1Router.Get("/enums", apiCfg.middlewareAuth(apiCfg.handlerGetEnumValues))
