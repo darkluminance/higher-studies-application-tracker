@@ -26,7 +26,7 @@ export default function InterviewForm(
 		const settingData = {
 			id: "",
 			faculty_id: "",
-			date: "",
+			date: new Date().toISOString().split("T")[0],
 			is_completed: false,
 			remarks: "",
 		};
@@ -101,20 +101,75 @@ export default function InterviewForm(
 			</div>
 			<div class="block">
 				<label for="date">Interview Date:</label>
-				<input
-					type="string"
-					placeholder="YYYY-MM-DD"
-					id="date"
-					required
-					value={data().date}
-					class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
-					onInput={(e) =>
-						setData({
-							...data(),
-							date: e.target.value,
-						})
-					}
-				/>
+				<div class="grid grid-cols-3 gap-2 mt-2">
+					<div class="flex flex-col">
+						<label for="interview_day">Day</label>
+						<select
+							id="interview_day"
+							class="px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
+							value={data().date?.split("-")[2] || ""}
+							required
+							onInput={(e) => {
+								const [year, month] = data().date?.split("-") || ["", ""];
+								setData({
+									...data(),
+									date: `${year || new Date().getFullYear()}-${month || "01"}-${
+										e.target.value
+									}`,
+								});
+							}}
+						>
+							{Array.from({ length: 31 }, (_, i) => {
+								const day = (i + 1).toString().padStart(2, "0");
+								return <option value={day}>{day}</option>;
+							})}
+						</select>
+					</div>
+					<div class="flex flex-col">
+						<label for="interview_month">Month</label>
+						<select
+							id="interview_month"
+							class="px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
+							value={data().date?.split("-")[1] || ""}
+							required
+							onInput={(e) => {
+								const [year, _, day] = data().date?.split("-") || ["", "", ""];
+								setData({
+									...data(),
+									date: `${year || new Date().getFullYear()}-${
+										e.target.value
+									}-${day || "01"}`,
+								});
+							}}
+						>
+							{Array.from({ length: 12 }, (_, i) => {
+								const month = (i + 1).toString().padStart(2, "0");
+								return <option value={month}>{month}</option>;
+							})}
+						</select>
+					</div>
+					<div class="flex flex-col">
+						<label for="interview_year">Year</label>
+						<select
+							id="interview_year"
+							class="px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
+							value={data().date?.split("-")[0] || ""}
+							required
+							onInput={(e) => {
+								const [_, month, day] = data().date?.split("-") || ["", "", ""];
+								setData({
+									...data(),
+									date: `${e.target.value}-${month || "01"}-${day || "01"}`,
+								});
+							}}
+						>
+							{Array.from({ length: 10 }, (_, i) => {
+								const year = new Date().getFullYear() + i - 1;
+								return <option value={year}>{year}</option>;
+							})}
+						</select>
+					</div>
+				</div>
 			</div>
 			<div class="block">
 				<label for="is_completed">Completed:</label>

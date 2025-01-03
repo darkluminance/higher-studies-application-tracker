@@ -25,6 +25,7 @@ function HomeTimeline() {
 		Applieduniversitycount: number;
 		Repliedmailscount: number;
 		Universityapplicationcount: number;
+		Recommendationcount: number;
 	};
 	const [timelineData, setTimelineData] = createSignal<Timeline>(
 		{} as Timeline
@@ -94,7 +95,9 @@ function HomeTimeline() {
 						<p class="text-gray-500">Universities applied from the list</p>
 					</div>
 					<div class="border rounded-xl p-8 h-48 flex flex-col items-center justify-center gap-4 bg-white drop-shadow-sm hover:drop-shadow-2xl">
-						<h1 class="text-5xl text-gray-700">{0}%</h1>
+						<h1 class="text-5xl text-gray-700">
+							{Math.round(timelineData().Recommendationcount * 100)}%
+						</h1>
 						<p class="text-gray-500">Recommendations submitted</p>
 					</div>
 					<div class="border rounded-xl p-8 h-48 flex flex-col items-center justify-center gap-4 bg-white drop-shadow-sm hover:drop-shadow-2xl">

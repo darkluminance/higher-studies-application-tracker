@@ -20,8 +20,8 @@ export default function UniversityForm(
 			main_ranking: 0,
 			subject_ranking: 0,
 			application_fee: 0,
-			application_deadline: "",
-			early_deadline: "",
+			application_deadline: new Date().toISOString().split("T")[0],
+			early_deadline: new Date().toISOString().split("T")[0],
 			is_gre_must: false,
 			is_gmat_must: false,
 			lor_count: 0,
@@ -152,40 +152,169 @@ export default function UniversityForm(
 					}
 				/>
 			</div>
-			<div class="block grid grid-cols-2 gap-4">
-				<div>
-					<label for="application_deadline">Application Deadline:</label>
-					<input
-						type="string"
-						placeholder="YYYY-MM-DD"
-						id="application_deadline"
-						required
-						value={data().application_deadline}
-						class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
-						onInput={(e) =>
-							setData({
-								...data(),
-								application_deadline: e.target.value,
-							})
-						}
-					/>
+			<div class="block">
+				<label for="early_deadline">Priority Deadline:</label>
+				<div class="grid grid-cols-3 gap-2 mt-2">
+					<div class="flex flex-col">
+						<label for="priority_deadline_day">Day</label>
+						<select
+							id="early_day"
+							class="px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
+							value={data().early_deadline?.split("-")[2] || ""}
+							required
+							onInput={(e) => {
+								const [year, month] = data().early_deadline?.split("-") || [
+									"",
+									"",
+								];
+								setData({
+									...data(),
+									early_deadline: `${year || new Date().getFullYear()}-${
+										month || "01"
+									}-${e.target.value}`,
+								});
+							}}
+						>
+							{Array.from({ length: 31 }, (_, i) => {
+								const day = (i + 1).toString().padStart(2, "0");
+								return <option value={day}>{day}</option>;
+							})}
+						</select>
+					</div>
+					<div class="flex flex-col">
+						<label for="priority_deadline_month">Month</label>
+						<select
+							id="early_month"
+							class="px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
+							value={data().early_deadline?.split("-")[1] || ""}
+							required
+							onInput={(e) => {
+								const [year, _, day] = data().early_deadline?.split("-") || [
+									"",
+									"",
+									"",
+								];
+								setData({
+									...data(),
+									early_deadline: `${year || new Date().getFullYear()}-${
+										e.target.value
+									}-${day || "01"}`,
+								});
+							}}
+						>
+							{Array.from({ length: 12 }, (_, i) => {
+								const month = (i + 1).toString().padStart(2, "0");
+								return <option value={month}>{month}</option>;
+							})}
+						</select>
+					</div>
+					<div class="flex flex-col">
+						<label for="priority_deadline_year">Year</label>
+						<select
+							id="early_year"
+							class="px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
+							value={data().early_deadline?.split("-")[0] || ""}
+							required
+							onInput={(e) => {
+								const [_, month, day] = data().early_deadline?.split("-") || [
+									"",
+									"",
+									"",
+								];
+								setData({
+									...data(),
+									early_deadline: `${e.target.value}-${month || "01"}-${
+										day || "01"
+									}`,
+								});
+							}}
+						>
+							{Array.from({ length: 10 }, (_, i) => {
+								const year = new Date().getFullYear() + i - 1;
+								return <option value={year}>{year}</option>;
+							})}
+						</select>
+					</div>
 				</div>
-				<div>
-					<label for="early_deadline">Priority Deadline:</label>
-					<input
-						type="string"
-						placeholder="YYYY-MM-DD"
-						id="early_deadline"
-						required
-						value={data().early_deadline}
-						class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
-						onInput={(e) =>
-							setData({
-								...data(),
-								early_deadline: e.target.value,
-							})
-						}
-					/>
+			</div>
+			<div class="block">
+				<label for="application_deadline">Application Deadline:</label>
+				<div class="grid grid-cols-3 gap-2 mt-2">
+					<div class="flex flex-col">
+						<label for="application_deadline_day">Day</label>
+						<select
+							id="app_day"
+							class="px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
+							value={data().application_deadline?.split("-")[2] || ""}
+							required
+							onInput={(e) => {
+								const [year, month] = data().application_deadline?.split(
+									"-"
+								) || ["", ""];
+								setData({
+									...data(),
+									application_deadline: `${year || new Date().getFullYear()}-${
+										month || "01"
+									}-${e.target.value}`,
+								});
+							}}
+						>
+							{Array.from({ length: 31 }, (_, i) => {
+								const day = (i + 1).toString().padStart(2, "0");
+								return <option value={day}>{day}</option>;
+							})}
+						</select>
+					</div>
+					<div class="flex flex-col">
+						<label for="application_deadline_month">Month</label>
+						<select
+							id="app_month"
+							class="px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
+							value={data().application_deadline?.split("-")[1] || ""}
+							required
+							onInput={(e) => {
+								const [year, _, day] = data().application_deadline?.split(
+									"-"
+								) || ["", "", ""];
+								setData({
+									...data(),
+									application_deadline: `${year || new Date().getFullYear()}-${
+										e.target.value
+									}-${day || "01"}`,
+								});
+							}}
+						>
+							{Array.from({ length: 12 }, (_, i) => {
+								const month = (i + 1).toString().padStart(2, "0");
+								return <option value={month}>{month}</option>;
+							})}
+						</select>
+					</div>
+					<div class="flex flex-col">
+						<label for="application_deadline_year">Year</label>
+						<select
+							id="app_year"
+							class="px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
+							value={data().application_deadline?.split("-")[0] || ""}
+							required
+							onInput={(e) => {
+								const [_, month, day] = data().application_deadline?.split(
+									"-"
+								) || ["", "", ""];
+								setData({
+									...data(),
+									application_deadline: `${e.target.value}-${month || "01"}-${
+										day || "01"
+									}`,
+								});
+							}}
+						>
+							{Array.from({ length: 10 }, (_, i) => {
+								const year = new Date().getFullYear() + i - 1;
+								return <option value={year}>{year}</option>;
+							})}
+						</select>
+					</div>
 				</div>
 			</div>
 			<div class="block">
