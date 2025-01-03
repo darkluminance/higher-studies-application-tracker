@@ -73,12 +73,8 @@ export default function UniversityForm(
 		if (res) {
 			setUserData("isFirstTime", false);
 			localStorage.setItem("isFirstTime", JSON.stringify(false));
-			toast.success("Successfully created university");
-		} else {
-			toast.error("Could not create university");
+			props?.fallback();
 		}
-
-		props?.fallback();
 	};
 
 	return (

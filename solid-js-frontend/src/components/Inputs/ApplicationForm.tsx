@@ -151,12 +151,8 @@ export default function ApplicationForm(
 		if (res) {
 			setUserData("isFirstTime", false);
 			localStorage.setItem("isFirstTime", JSON.stringify(false));
-			toast.success("Success");
-		} else {
-			toast.error("Could not submit data");
+			props?.fallback();
 		}
-
-		props?.fallback();
 	};
 
 	return (

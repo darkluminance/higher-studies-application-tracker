@@ -12,6 +12,7 @@ import Faculty from "./routes/Faculty";
 import Interview from "./routes/Interview";
 import Mail from "./routes/Mail";
 import Application from "./routes/Application";
+import RecommendationStatus from "./routes/RecommendationStatus";
 
 const App: Component = () => {
 	return (
@@ -53,6 +54,11 @@ const App: Component = () => {
 				<Route
 					path="/application"
 					component={() => ProtectedRoute({ children: Application })}
+				></Route>
+
+				<Route
+					path="/recommendation_status/:university_id"
+					component={() => ProtectedRoute({ children: RecommendationStatus })}
 				></Route>
 
 				<Route path="*" component={Error404} />

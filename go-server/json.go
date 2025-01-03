@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"strings"
 )
 
 func respondWithJSON(w http.ResponseWriter, code int, payload interface{}) {
@@ -24,7 +25,25 @@ func respondWithError(w http.ResponseWriter, code int, msg string) {
 	type errResponse struct {
 		Error string `json:"error"`
 	}
+
+	if containsDuplicateKeyError(msg) {
+		msg = getDuplicateKeyName(msg)
+		code = http.StatusConflict
+	}
+
 	respondWithJSON(w, code, errResponse{
 		Error: msg,
 	})
+}
+
+func containsDuplicateKeyError(msg string) bool {
+	return strings.Contains(msg, "duplicate key value violates unique constraint")
+}
+
+func getDuplicateKeyName(msg string) string {
+	words := strings.Split(msg, "\"")
+
+	result := strings.Replace(words[1], "_", " ", -1)
+	result = strings.Title(result)
+	return strings.Replace(result, " Key", "", -1) + " already exists"
 }

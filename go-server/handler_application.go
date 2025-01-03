@@ -46,6 +46,17 @@ func (apiConfig *apiConfig) handlerCreateUniversityApplication(w http.ResponseWr
 		return
 	}
 
+	for _, recommender_id := range params.RecommendersID {
+		_, err := apiConfig.DB.CreateRecommendationStatus(r.Context(), database.CreateRecommendationStatusParams{
+			ApplicationID: application.ID,
+			RecommenderID: recommender_id,
+			UserID:        user.ID,
+		})
+		if err != nil {
+			respondWithError(w, http.StatusInternalServerError, fmt.Sprintf("Couldn't create recommendation status: %v", err))
+		}
+	}
+
 	respondWithJSON(w, http.StatusCreated, databaseUniversityApplicationToUniversityApplication(application))
 }
 
@@ -62,6 +73,61 @@ func (apiConfig *apiConfig) handlerGetUniversityApplicationsOfUser(w http.Respon
 	}
 
 	respondWithJSON(w, http.StatusOK, application_list)
+}
+
+func (apiConfig *apiConfig) handlerGetUniversityRecommendationStatus(w http.ResponseWriter, r *http.Request, user database.User) {
+	type parameters struct {
+		ApplicationID uuid.UUID `json:"application_id"`
+	}
+	params := parameters{}
+
+	err := json.NewDecoder(r.Body).Decode(&params)
+	if err != nil {
+		respondWithError(w, http.StatusBadRequest, fmt.Sprintf("Invalid request payload: %v", err))
+		return
+	}
+
+	statusList, err := apiConfig.DB.GetRecommendationStatusByUniversityApplicationId(r.Context(), params.ApplicationID)
+	if err != nil {
+		respondWithError(w, http.StatusNotFound, "Recommendation Status not found")
+		return
+	}
+
+	var statuses []RecommendationStatus
+
+	for _, status := range statusList {
+		statuses = append(statuses, databaseRecommendationStatusToRecommendationStatus(database.GetRecommendationStatusByUniversityApplicationIdRow{
+			ID:             status.ID,
+			ApplicationID:  status.ApplicationID,
+			Name:           status.Name,
+			RecommenderID:  status.RecommenderID,
+			IsLorSubmitted: status.IsLorSubmitted,
+			UserID:         status.UserID,
+		}))
+	}
+
+	respondWithJSON(w, http.StatusOK, statuses)
+}
+
+func (apiConfig *apiConfig) handlerGetUniversityNameByApplicationID(w http.ResponseWriter, r *http.Request, user database.User) {
+	type parameters struct {
+		ApplicationID uuid.UUID `json:"application_id"`
+	}
+	params := parameters{}
+
+	err := json.NewDecoder(r.Body).Decode(&params)
+	if err != nil {
+		respondWithError(w, http.StatusBadRequest, fmt.Sprintf("Invalid request payload: %v", err))
+		return
+	}
+
+	name, err := apiConfig.DB.GetUniversityNameByApplicationId(r.Context(), params.ApplicationID)
+	if err != nil {
+		respondWithError(w, http.StatusNotFound, "Recommendation Status not found")
+		return
+	}
+
+	respondWithJSON(w, http.StatusOK, name)
 }
 
 func (apiConfig *apiConfig) handlerGetUniversityApplicationByID(w http.ResponseWriter, r *http.Request, user database.User) {
@@ -106,6 +172,12 @@ func (apiConfig *apiConfig) handlerUpdateUniversityApplicationByID(w http.Respon
 		return
 	}
 
+	_, err = apiConfig.DB.DeleteRecommendationStatusByApplicationID(r.Context(), params.ID)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, fmt.Sprintf("Couldn't remove existing recommendation status: %v", err))
+		return
+	}
+
 	application, err := apiConfig.DB.UpdateUniversityApplicationByID(r.Context(), database.UpdateUniversityApplicationByIDParams{
 		ID:                     params.ID,
 		UniversityID:           params.UniversityID,
@@ -121,6 +193,17 @@ func (apiConfig *apiConfig) handlerUpdateUniversityApplicationByID(w http.Respon
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, fmt.Sprintf("Couldn't update application: %v", err))
 		return
+	}
+
+	for _, recommender_id := range params.RecommendersID {
+		_, err := apiConfig.DB.CreateRecommendationStatus(r.Context(), database.CreateRecommendationStatusParams{
+			ApplicationID: application.ID,
+			RecommenderID: recommender_id,
+			UserID:        user.ID,
+		})
+		if err != nil {
+			respondWithError(w, http.StatusInternalServerError, fmt.Sprintf("Couldn't update recommendation status: %v", err))
+		}
 	}
 
 	respondWithJSON(w, http.StatusOK, databaseUniversityApplicationToUniversityApplication(application))
@@ -145,4 +228,29 @@ func (apiConfig *apiConfig) handlerDeleteUniversityApplicationByID(w http.Respon
 	}
 
 	respondWithJSON(w, http.StatusOK, databaseUniversityApplicationToUniversityApplication(application))
+}
+
+func (apiConfig *apiConfig) handlerUpdateRecommenderStatusByID(w http.ResponseWriter, r *http.Request, user database.User) {
+	type parameters struct {
+		ID             uuid.UUID `json:"id"`
+		IsLorSubmitted bool      `json:"is_lor_submitted"`
+	}
+	params := parameters{}
+
+	err := json.NewDecoder(r.Body).Decode(&params)
+	if err != nil {
+		respondWithError(w, http.StatusBadRequest, fmt.Sprintf("Invalid request payload: %v", err))
+		return
+	}
+
+	recommendation_status, err := apiConfig.DB.UpdateRecommendationStatus(r.Context(), database.UpdateRecommendationStatusParams{
+		ID:             params.ID,
+		IsLorSubmitted: params.IsLorSubmitted,
+	})
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, fmt.Sprintf("Couldn't update mail: %v", err))
+		return
+	}
+
+	respondWithJSON(w, http.StatusOK, recommendation_status)
 }

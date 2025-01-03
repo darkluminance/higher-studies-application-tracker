@@ -89,7 +89,7 @@ function HomeTimeline() {
 				<div class="grid grid-cols-2 gap-4 cursor-pointer text-center h-fit">
 					<div class="border rounded-xl p-8 h-48 flex flex-col items-center justify-center gap-4 bg-white drop-shadow-sm hover:drop-shadow-2xl">
 						<h1 class="text-5xl text-gray-700">
-							{timelineData().Applieduniversitycount * 100}%
+							{Math.round(timelineData().Applieduniversitycount * 100)}%
 						</h1>
 						<p class="text-gray-500">Universities applied from the list</p>
 					</div>
@@ -99,7 +99,7 @@ function HomeTimeline() {
 					</div>
 					<div class="border rounded-xl p-8 h-48 flex flex-col items-center justify-center gap-4 bg-white drop-shadow-sm hover:drop-shadow-2xl">
 						<h1 class="text-5xl text-gray-700">
-							{(timelineData().Repliedmailscount * 100).toFixed(2)}%
+							{Math.round(timelineData().Repliedmailscount * 100)}%
 						</h1>
 						<p class="text-gray-500">Faculties replied back to their mails</p>
 					</div>

@@ -45,11 +45,7 @@ function RecommenderComponent() {
 	};
 
 	onMount(() => {
-		toast.promise(fetchRecommenders(), {
-			loading: "Fetching data...",
-			success: (val) => <span>Fetched data</span>,
-			error: <span>Could not fetch data</span>,
-		});
+		fetchRecommenders();
 	});
 
 	return (

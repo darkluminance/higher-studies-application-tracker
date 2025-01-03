@@ -64,16 +64,8 @@ export default function DynamicTable(props: {
 			returnValue = recommender?.name;
 		}
 
-		if (header === "recommenders_id" && props.recommenderList) {
-			const recommenders = (val as string[])?.map(
-				(recommenderId: string) =>
-					props.recommenderList!.filter(
-						(item: Recommenders) => item.id === recommenderId
-					)[0]
-			);
-			returnValue = recommenders
-				.map((recommender: Recommenders) => recommender?.name)
-				.join(", ");
+		if (header === "recommenders_id") {
+			returnValue = "";
 		}
 
 		if (header === "shortlisted_faculties_id" && props.facultyList) {
@@ -174,6 +166,14 @@ export default function DynamicTable(props: {
 												}
 											>
 												{formattedData(row[header], header)}
+												<Show when={header === "recommenders_id"}>
+													<a
+														href={"/recommendation_status/" + row.id}
+														class="text-cyan-400"
+													>
+														View Status
+													</a>
+												</Show>
 											</td>
 										)}
 									</For>
