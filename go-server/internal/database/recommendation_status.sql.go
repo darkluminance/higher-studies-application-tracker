@@ -38,6 +38,41 @@ func (q *Queries) CreateRecommendationStatus(ctx context.Context, arg CreateReco
 	return i, err
 }
 
+const deleteRecommendationStatusByApplicationID = `-- name: DeleteRecommendationStatusByApplicationID :many
+DELETE FROM recommender_status
+WHERE application_id = $1
+RETURNING id, application_id, recommender_id, is_lor_submitted, user_id
+`
+
+func (q *Queries) DeleteRecommendationStatusByApplicationID(ctx context.Context, applicationID uuid.UUID) ([]RecommenderStatus, error) {
+	rows, err := q.db.QueryContext(ctx, deleteRecommendationStatusByApplicationID, applicationID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []RecommenderStatus
+	for rows.Next() {
+		var i RecommenderStatus
+		if err := rows.Scan(
+			&i.ID,
+			&i.ApplicationID,
+			&i.RecommenderID,
+			&i.IsLorSubmitted,
+			&i.UserID,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getRecommendationStatusByUniversityApplicationId = `-- name: GetRecommendationStatusByUniversityApplicationId :many
 SELECT rs.id, application_id, recommender_id, is_lor_submitted, rs.user_id, r.id, r.user_id, name, email, designation, institution, relationship, created_at, updated_at FROM recommender_status rs
 LEFT JOIN recommender r ON r.id = rs.recommender_id

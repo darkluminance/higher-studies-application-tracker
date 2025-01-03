@@ -172,6 +172,12 @@ func (apiConfig *apiConfig) handlerUpdateUniversityApplicationByID(w http.Respon
 		return
 	}
 
+	_, err = apiConfig.DB.DeleteRecommendationStatusByApplicationID(r.Context(), params.ID)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, fmt.Sprintf("Couldn't remove existing recommendation status: %v", err))
+		return
+	}
+
 	application, err := apiConfig.DB.UpdateUniversityApplicationByID(r.Context(), database.UpdateUniversityApplicationByIDParams{
 		ID:                     params.ID,
 		UniversityID:           params.UniversityID,
@@ -187,6 +193,17 @@ func (apiConfig *apiConfig) handlerUpdateUniversityApplicationByID(w http.Respon
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, fmt.Sprintf("Couldn't update application: %v", err))
 		return
+	}
+
+	for _, recommender_id := range params.RecommendersID {
+		_, err := apiConfig.DB.CreateRecommendationStatus(r.Context(), database.CreateRecommendationStatusParams{
+			ApplicationID: application.ID,
+			RecommenderID: recommender_id,
+			UserID:        user.ID,
+		})
+		if err != nil {
+			respondWithError(w, http.StatusInternalServerError, fmt.Sprintf("Couldn't update recommendation status: %v", err))
+		}
 	}
 
 	respondWithJSON(w, http.StatusOK, databaseUniversityApplicationToUniversityApplication(application))
