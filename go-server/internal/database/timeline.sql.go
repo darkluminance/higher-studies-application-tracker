@@ -79,13 +79,23 @@ university_application_count_cte AS (
         university_application uaa
     WHERE 
         uaa.user_id = $1
+),
+
+recommendation_count_cte AS (
+    SELECT 
+        COALESCE(CAST(SUM(CASE WHEN is_lor_submitted = TRUE THEN 1 ELSE 0 END) AS FLOAT) / NULLIF(COUNT(*), 0), 0) AS recommendationCount
+    FROM 
+        recommender_status rs
+    WHERE 
+        rs.user_id = $1
 )
 
 SELECT 
     COALESCE((SELECT JSON_AGG(t)::TEXT FROM timeline_cte t), '[]') AS timeline,
     (SELECT appliedUniversityCount FROM applied_university_count_cte) AS appliedUniversityCount,
     (SELECT repliedMailsCount FROM replied_mails_count_cte) AS repliedMailsCount,
-    (SELECT universityApplicationCount FROM university_application_count_cte) AS universityApplicationCount
+    (SELECT universityApplicationCount FROM university_application_count_cte) AS universityApplicationCount,
+    (SELECT recommendationCount FROM recommendation_count_cte) AS recommendationCount
 `
 
 type GetTimelineRow struct {
@@ -93,6 +103,7 @@ type GetTimelineRow struct {
 	Applieduniversitycount     interface{}
 	Repliedmailscount          interface{}
 	Universityapplicationcount interface{}
+	Recommendationcount        interface{}
 }
 
 func (q *Queries) GetTimeline(ctx context.Context, userID uuid.UUID) ([]GetTimelineRow, error) {
@@ -109,6 +120,7 @@ func (q *Queries) GetTimeline(ctx context.Context, userID uuid.UUID) ([]GetTimel
 			&i.Applieduniversitycount,
 			&i.Repliedmailscount,
 			&i.Universityapplicationcount,
+			&i.Recommendationcount,
 		); err != nil {
 			return nil, err
 		}
