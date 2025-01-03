@@ -87,11 +87,7 @@ function ApplicationComponent() {
 		fetchFaculties();
 		fetchUniversities();
 		fetchRecommenders();
-		toast.promise(fetchApplicationLists(), {
-			loading: "Fetching data...",
-			success: (val) => <span>Fetched data</span>,
-			error: <span>Could not fetch data</span>,
-		});
+		fetchApplicationLists();
 	});
 
 	return (
