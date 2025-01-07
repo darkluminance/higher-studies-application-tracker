@@ -24,6 +24,7 @@ universities_cte AS (
         university u
     WHERE 
         u.user_id = $1
+        AND u.early_deadline >= CURRENT_DATE
     ORDER BY 
         u.early_deadline ASC
     LIMIT 4
@@ -42,6 +43,7 @@ interviews_cte AS (
     LEFT JOIN university u ON f.university_id = u.id
     WHERE 
         i.user_id = $1
+        AND i.date >= CURRENT_DATE
     ORDER BY 
         i.date ASC
     LIMIT 4
