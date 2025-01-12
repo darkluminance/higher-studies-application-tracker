@@ -48,6 +48,7 @@ type Interview struct {
 	UserID      uuid.UUID `json:"user_id"`
 	FacultyID   uuid.UUID `json:"faculty_id"`
 	Date        time.Time `json:"date"`
+	Time        string    `json:"time"`
 	IsCompleted bool      `json:"is_completed"`
 	Remarks     string    `json:"remarks"`
 	CreatedAt   time.Time `json:"created_at"`
@@ -185,6 +186,7 @@ func databaseInterviewToInterview(databaseInterview database.Interview) Intervie
 		UserID:      databaseInterview.UserID,
 		FacultyID:   databaseInterview.FacultyID,
 		Date:        databaseInterview.Date.Time,
+		Time:        databaseInterview.Time.Time.Format("03:04 PM"),
 		IsCompleted: databaseInterview.IsCompleted.Bool,
 		Remarks:     databaseInterview.Remarks.String,
 		CreatedAt:   databaseInterview.CreatedAt.Time,

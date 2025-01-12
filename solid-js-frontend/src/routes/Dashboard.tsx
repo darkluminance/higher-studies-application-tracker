@@ -80,7 +80,9 @@ function HomeTimeline() {
 									  ", " +
 									  timelineItem.university_name}
 							</p>
-							<p class="text-gray-500">{timelineItem.date}</p>
+							<p class="text-gray-500">
+								{new Date(timelineItem.date).toLocaleString()}
+							</p>
 						</div>
 					)}
 				</For>

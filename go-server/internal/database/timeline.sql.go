@@ -36,7 +36,7 @@ interviews_cte AS (
         f.name AS name,
         u.name AS university_name,
         f.designation AS designation,
-        i.date
+        i.date + TO_TIMESTAMP(TO_CHAR(i.time, 'HH:MI AM'), 'HH:MI AM')::TIME AS date
     FROM 
         interview i
     LEFT JOIN faculty f ON i.faculty_id = f.id
