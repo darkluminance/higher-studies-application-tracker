@@ -17,7 +17,7 @@ import RecommendationStatus from "./routes/RecommendationStatus";
 const App: Component = () => {
 	return (
 		<>
-			<Toaster position="bottom-left"></Toaster>
+			<Toaster position="bottom-left" gutter={1000000}></Toaster>
 			<Router>
 				<Route path="/register" component={Register}></Route>
 				<Route path="/login" component={Login}></Route>
