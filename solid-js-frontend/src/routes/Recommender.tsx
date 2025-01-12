@@ -25,8 +25,6 @@ function RecommenderComponent() {
 		if (recommenders) {
 			setRecommenders(recommenders);
 		}
-
-		return recommenders;
 	};
 	const handleDeleteRecommender = (id: string) => {
 		const res = postAuthenticatedData("/recommenders/delete", {
@@ -43,10 +41,6 @@ function RecommenderComponent() {
 				fetchRecommenders();
 			});
 	};
-
-	onMount(() => {
-		fetchRecommenders();
-	});
 
 	return (
 		<>

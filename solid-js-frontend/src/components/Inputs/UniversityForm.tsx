@@ -24,7 +24,7 @@ export default function UniversityForm(
 			early_deadline: new Date().toISOString().split("T")[0],
 			is_gre_must: false,
 			is_gmat_must: false,
-			lor_count: 0,
+			lor_count: 1,
 			is_official_transcript_required: false,
 			is_transcript_needs_evaluation: false,
 			remarks: "",
@@ -156,7 +156,6 @@ export default function UniversityForm(
 				<label for="early_deadline">Priority Deadline:</label>
 				<div class="grid grid-cols-3 gap-2 mt-2">
 					<div class="flex flex-col">
-						<label for="priority_deadline_day">Day</label>
 						<select
 							id="early_day"
 							class="px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
@@ -182,7 +181,6 @@ export default function UniversityForm(
 						</select>
 					</div>
 					<div class="flex flex-col">
-						<label for="priority_deadline_month">Month</label>
 						<select
 							id="early_month"
 							class="px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
@@ -204,12 +202,14 @@ export default function UniversityForm(
 						>
 							{Array.from({ length: 12 }, (_, i) => {
 								const month = (i + 1).toString().padStart(2, "0");
-								return <option value={month}>{month}</option>;
+								const monthName = new Date(2000, i).toLocaleString("default", {
+									month: "long",
+								});
+								return <option value={month}>{monthName}</option>;
 							})}
 						</select>
 					</div>
 					<div class="flex flex-col">
-						<label for="priority_deadline_year">Year</label>
 						<select
 							id="early_year"
 							class="px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
@@ -241,7 +241,6 @@ export default function UniversityForm(
 				<label for="application_deadline">Application Deadline:</label>
 				<div class="grid grid-cols-3 gap-2 mt-2">
 					<div class="flex flex-col">
-						<label for="application_deadline_day">Day</label>
 						<select
 							id="app_day"
 							class="px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
@@ -266,7 +265,6 @@ export default function UniversityForm(
 						</select>
 					</div>
 					<div class="flex flex-col">
-						<label for="application_deadline_month">Month</label>
 						<select
 							id="app_month"
 							class="px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
@@ -286,12 +284,14 @@ export default function UniversityForm(
 						>
 							{Array.from({ length: 12 }, (_, i) => {
 								const month = (i + 1).toString().padStart(2, "0");
-								return <option value={month}>{month}</option>;
+								const monthName = new Date(2000, i).toLocaleString("default", {
+									month: "long",
+								});
+								return <option value={month}>{monthName}</option>;
 							})}
 						</select>
 					</div>
 					<div class="flex flex-col">
-						<label for="application_deadline_year">Year</label>
 						<select
 							id="app_year"
 							class="px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
@@ -321,7 +321,7 @@ export default function UniversityForm(
 				<label for="lor_count">LOR count:</label>
 				<input
 					type="number"
-					min="0"
+					min="1"
 					id="lor_count"
 					value={data().lor_count}
 					class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
