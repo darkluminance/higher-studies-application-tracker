@@ -293,22 +293,42 @@ export default function ApplicationForm(
 				</For>
 			</div>
 			<div class="block">
-				<label>Recommenders:</label>
-				<For each={Array(lorCount()).fill(0)}>
+				<div class="grid grid-cols-2">
+					<label>Recommenders: ({lorCount()} required)</label>
+					<button
+						type="button"
+						class="text-right text-cyan-400 hover:text-cyan-300"
+						onClick={() => {
+							if (data().recommenders_id.length < lorCount()) {
+								setData({
+									...data(),
+									recommenders_id: [...data().recommenders_id, ""],
+								});
+							} else {
+								toast.error(`Maximum ${lorCount()} recommenders allowed`);
+							}
+						}}
+					>
+						Add Recommender
+					</button>
+				</div>
+				<For each={data().recommenders_id}>
 					{(_, index) => (
 						<div class="flex gap-4 mt-2">
 							<select
 								class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
 								value={data().recommenders_id[index()]}
+								required
 								onChange={(e) => {
-									const newFaculties = [...data().recommenders_id];
-									newFaculties[index()] = e.target.value;
+									const newRecommenders = [...data().recommenders_id];
+									newRecommenders[index()] = e.target.value;
 									setData({
 										...data(),
-										recommenders_id: newFaculties,
+										recommenders_id: newRecommenders,
 									});
 								}}
 							>
+								<option value="">Select a recommender</option>
 								<For each={recommenders()}>
 									{(recommender) => (
 										<option
@@ -322,6 +342,21 @@ export default function ApplicationForm(
 									)}
 								</For>
 							</select>
+							<button
+								type="button"
+								class="hover:opacity-50"
+								onClick={() => {
+									const newRecommenders = data().recommenders_id.filter(
+										(_, i) => i !== index()
+									);
+									setData({
+										...data(),
+										recommenders_id: newRecommenders,
+									});
+								}}
+							>
+								<RemoveIcon width="24px"></RemoveIcon>
+							</button>
 						</div>
 					)}
 				</For>
