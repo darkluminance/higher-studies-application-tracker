@@ -25,9 +25,6 @@ export default function Sidebar() {
 				<li class={currentPath() === "university" ? "text-cyan-400" : ""}>
 					<A href="/university">Universities</A>
 				</li>
-				<li class={currentPath() === "recommender" ? "text-cyan-400" : ""}>
-					<A href="/recommender">Recommenders</A>
-				</li>
 				<li class={currentPath() === "faculty" ? "text-cyan-400" : ""}>
 					<A href="/faculty">Faculties</A>
 				</li>
@@ -36,6 +33,9 @@ export default function Sidebar() {
 				</li>
 				<li class={currentPath() === "interview" ? "text-cyan-400" : ""}>
 					<A href="/interview">Interviews</A>
+				</li>
+				<li class={currentPath() === "recommender" ? "text-cyan-400" : ""}>
+					<A href="/recommender">Recommenders</A>
 				</li>
 				<li class={currentPath() === "application" ? "text-cyan-400" : ""}>
 					<A href="/application">Applications</A>

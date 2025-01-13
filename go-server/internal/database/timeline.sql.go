@@ -24,6 +24,7 @@ universities_cte AS (
         university u
     WHERE 
         u.user_id = $1
+        AND u.early_deadline >= CURRENT_DATE
     ORDER BY 
         u.early_deadline ASC
     LIMIT 4
@@ -35,13 +36,14 @@ interviews_cte AS (
         f.name AS name,
         u.name AS university_name,
         f.designation AS designation,
-        i.date
+        i.date + TO_TIMESTAMP(TO_CHAR(i.time, 'HH:MI AM'), 'HH:MI AM')::TIME AS date
     FROM 
         interview i
     LEFT JOIN faculty f ON i.faculty_id = f.id
     LEFT JOIN university u ON f.university_id = u.id
     WHERE 
         i.user_id = $1
+        AND i.date >= CURRENT_DATE
     ORDER BY 
         i.date ASC
     LIMIT 4

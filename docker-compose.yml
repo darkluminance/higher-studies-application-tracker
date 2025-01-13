@@ -1,9 +1,31 @@
 services:
+  db:
+    image: ryedae/higher-studies-application-tracker_db:latest
+    build:
+      context: ./postgresql-database
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=${DB_USERNAME}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_DATABASE}
+    ports:
+      - "5432:5432"
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME} -d ${DB_DATABASE}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
   backend:
     image: ryedae/higher-studies-application-tracker_backend:latest
     build:
       context: ./go-server
       dockerfile: Dockerfile
+    volumes:
+      - go-mod-cache:/go/pkg/mod
     ports:
       - "8080:8080"
     env_file:
@@ -15,7 +37,8 @@ services:
     networks:
       - app-network
     depends_on:
-      - db
+      db:
+        condition: service_healthy
 
   frontend:
     image: ryedae/higher-studies-application-tracker_frontend:latest
@@ -35,24 +58,10 @@ services:
     networks:
       - app-network
 
-  db:
-    image: ryedae/higher-studies-application-tracker_db:latest
-    build:
-      context: ./postgresql-database
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    environment:
-      - POSTGRES_USER=${DB_USERNAME}
-      - POSTGRES_PASSWORD=${DB_PASSWORD}
-      - POSTGRES_DB=${DB_DATABASE}
-    ports:
-      - "5432:5432"
-    networks:
-      - app-network
-
 networks:
   app-network:
     driver: bridge
 
 volumes:
   postgres_data:
+  go-mod-cache:

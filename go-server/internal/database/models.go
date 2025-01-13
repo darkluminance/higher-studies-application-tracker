@@ -162,6 +162,7 @@ type Interview struct {
 	UserID      uuid.UUID
 	FacultyID   uuid.UUID
 	Date        sql.NullTime
+	Time        sql.NullTime
 	IsCompleted sql.NullBool
 	Remarks     sql.NullString
 	CreatedAt   sql.NullTime

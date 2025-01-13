@@ -74,7 +74,7 @@ function InterviewComponent() {
 				error: <span>Could not delete data</span>,
 			})
 			.then(() => {
-				fetchFaculties();
+				fetchInterviewLists();
 			});
 	};
 

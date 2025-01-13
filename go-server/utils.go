@@ -53,3 +53,14 @@ func convertStringArrayToUUIDArray(id_list []string) []uuid.UUID {
 	}
 	return ids
 }
+
+func stringToNullTime(timeStr string) sql.NullTime {
+	if timeStr == "" {
+		return sql.NullTime{Valid: false}
+	}
+	t, err := time.Parse("03:04 PM", timeStr)
+	if err != nil {
+		return sql.NullTime{Valid: false}
+	}
+	return sql.NullTime{Time: t, Valid: true}
+}

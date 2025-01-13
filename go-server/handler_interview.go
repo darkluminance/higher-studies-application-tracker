@@ -14,6 +14,7 @@ func (apiConfig *apiConfig) handlerCreateInterview(w http.ResponseWriter, r *htt
 	type parameters struct {
 		FacultyID   uuid.UUID `json:"faculty_id"`
 		Date        time.Time `json:"date"`
+		Time        string    `json:"time"`
 		IsCompleted bool      `json:"is_completed"`
 		Remarks     string    `json:"remarks"`
 	}
@@ -29,6 +30,7 @@ func (apiConfig *apiConfig) handlerCreateInterview(w http.ResponseWriter, r *htt
 		UserID:      user.ID,
 		FacultyID:   params.FacultyID,
 		Date:        ToNullTime(params.Date),
+		Time:        stringToNullTime(params.Time),
 		IsCompleted: ToNullBoolean(params.IsCompleted),
 		Remarks:     ToNullString(params.Remarks),
 	})
@@ -82,6 +84,7 @@ func (apiConfig *apiConfig) handlerUpdateInterviewByID(w http.ResponseWriter, r 
 		ID          uuid.UUID `json:"id"`
 		FacultyID   uuid.UUID `json:"faculty_id"`
 		Date        time.Time `json:"date"`
+		Time        string    `json:"time"`
 		IsCompleted bool      `json:"is_completed"`
 		Remarks     string    `json:"remarks"`
 	}
@@ -97,6 +100,7 @@ func (apiConfig *apiConfig) handlerUpdateInterviewByID(w http.ResponseWriter, r 
 		ID:          params.ID,
 		FacultyID:   params.FacultyID,
 		Date:        ToNullTime(params.Date),
+		Time:        stringToNullTime(params.Time),
 		IsCompleted: ToNullBoolean(params.IsCompleted),
 		Remarks:     ToNullString(params.Remarks),
 	})
@@ -105,7 +109,7 @@ func (apiConfig *apiConfig) handlerUpdateInterviewByID(w http.ResponseWriter, r 
 		return
 	}
 
-	respondWithJSON(w, http.StatusOK, interview)
+	respondWithJSON(w, http.StatusOK, databaseInterviewToInterview(interview))
 }
 
 func (apiConfig *apiConfig) handlerDeleteInterviewByID(w http.ResponseWriter, r *http.Request, user database.User) {
@@ -126,7 +130,7 @@ func (apiConfig *apiConfig) handlerDeleteInterviewByID(w http.ResponseWriter, r 
 		return
 	}
 
-	respondWithJSON(w, http.StatusOK, interview)
+	respondWithJSON(w, http.StatusOK, databaseInterviewToInterview(interview))
 }
 
 func (apiConfig *apiConfig) handlerGetInterviewsOfUserByFacultyID(w http.ResponseWriter, r *http.Request, user database.User) {

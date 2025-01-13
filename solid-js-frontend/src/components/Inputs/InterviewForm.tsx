@@ -27,6 +27,7 @@ export default function InterviewForm(
 			id: "",
 			faculty_id: "",
 			date: new Date().toISOString().split("T")[0],
+			time: "10:00 AM",
 			is_completed: false,
 			remarks: "",
 		};
@@ -103,7 +104,6 @@ export default function InterviewForm(
 				<label for="date">Interview Date:</label>
 				<div class="grid grid-cols-3 gap-2 mt-2">
 					<div class="flex flex-col">
-						<label for="interview_day">Day</label>
 						<select
 							id="interview_day"
 							class="px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
@@ -126,7 +126,6 @@ export default function InterviewForm(
 						</select>
 					</div>
 					<div class="flex flex-col">
-						<label for="interview_month">Month</label>
 						<select
 							id="interview_month"
 							class="px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
@@ -144,12 +143,14 @@ export default function InterviewForm(
 						>
 							{Array.from({ length: 12 }, (_, i) => {
 								const month = (i + 1).toString().padStart(2, "0");
-								return <option value={month}>{month}</option>;
+								const monthName = new Date(2000, i).toLocaleString("default", {
+									month: "long",
+								});
+								return <option value={month}>{monthName}</option>;
 							})}
 						</select>
 					</div>
 					<div class="flex flex-col">
-						<label for="interview_year">Year</label>
 						<select
 							id="interview_year"
 							class="px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
@@ -167,6 +168,72 @@ export default function InterviewForm(
 								const year = new Date().getFullYear() + i - 1;
 								return <option value={year}>{year}</option>;
 							})}
+						</select>
+					</div>
+				</div>
+			</div>
+			<div class="block">
+				<label for="time">Interview Time:</label>
+				<div class="grid grid-cols-3 gap-2 mt-2">
+					<div class="flex flex-col">
+						<select
+							id="interview_hour"
+							class="px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
+							value={data().time?.split(":")[0]}
+							required
+							onInput={(e) => {
+								const [_, minutes] = data().time.split(":");
+								const [min, am_pm] = minutes.split(" ");
+								setData({
+									...data(),
+									time: `${e.target.value}:${min} ${am_pm}`,
+								});
+							}}
+						>
+							{Array.from({ length: 12 }, (_, i) => {
+								const hour = (i + 1).toString().padStart(2, "0");
+								return <option value={hour}>{hour}</option>;
+							})}
+						</select>
+					</div>
+					<div class="flex flex-col">
+						<select
+							id="interview_minute"
+							class="px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
+							value={data().time?.split(":")[1].split(" ")[0]}
+							required
+							onInput={(e) => {
+								const [hours, minutes] = data().time.split(":");
+								const [_, am_pm] = minutes.split(" ");
+								setData({
+									...data(),
+									time: `${hours}:${e.target.value} ${am_pm}`,
+								});
+							}}
+						>
+							{Array.from({ length: 60 }, (_, i) => {
+								const minute = i.toString().padStart(2, "0");
+								return <option value={minute}>{minute}</option>;
+							})}
+						</select>
+					</div>
+					<div class="flex flex-col">
+						<select
+							id="interview_ampm"
+							class="px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
+							value={data().time?.split(":")[1].split(" ")[1]}
+							required
+							onInput={(e) => {
+								const [hours, minutes] = data().time.split(":");
+								const [min, _] = minutes.split(" ");
+								setData({
+									...data(),
+									time: `${hours}:${min} ${e.target.value}`,
+								});
+							}}
+						>
+							<option value="AM">AM</option>
+							<option value="PM">PM</option>
 						</select>
 					</div>
 				</div>

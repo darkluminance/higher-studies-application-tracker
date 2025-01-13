@@ -3,6 +3,7 @@ export type Interviews = {
 	user_id?: string;
 	faculty_id: string;
 	date: string;
+	time: string;
 	is_completed: boolean | string;
 	remarks: string;
 	created_at?: Date;

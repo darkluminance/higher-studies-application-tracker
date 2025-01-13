@@ -6,6 +6,9 @@ WORKDIR /app
 # Copy go mod and sum files
 COPY go.mod go.sum ./
 
+RUN go install github.com/pressly/goose/v3/cmd/goose@latest
+COPY migrations/ ./migrations
+
 # Download dependencies
 RUN go mod download
 
@@ -22,6 +25,8 @@ WORKDIR /app
 
 # Copy the binary from builder
 COPY --from=builder /app/main .
+COPY --from=builder /app/migrations ./app/main/migrations
+COPY --from=builder /go/bin/goose /usr/local/bin/goose
 
 # Create necessary directories and set permissions
 RUN chmod +x /app/main
@@ -29,4 +34,4 @@ RUN chmod +x /app/main
 EXPOSE 8080
 
 # Run the application
-CMD ["./main"]
+CMD ["sh", "-c", "goose -dir app/main/migrations postgres ${DB_URL} up && ./main"]

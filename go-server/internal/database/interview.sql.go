@@ -13,15 +13,16 @@ import (
 )
 
 const createInterview = `-- name: CreateInterview :one
-INSERT INTO interview (user_id, faculty_id, date, is_completed, remarks)
-VALUES ($1, $2, $3, $4, $5)
-RETURNING id, user_id, faculty_id, date, is_completed, remarks, created_at, updated_at
+INSERT INTO interview (user_id, faculty_id, date, time, is_completed, remarks)
+VALUES ($1, $2, $3, $4, $5, $6)
+RETURNING id, user_id, faculty_id, date, time, is_completed, remarks, created_at, updated_at
 `
 
 type CreateInterviewParams struct {
 	UserID      uuid.UUID
 	FacultyID   uuid.UUID
 	Date        sql.NullTime
+	Time        sql.NullTime
 	IsCompleted sql.NullBool
 	Remarks     sql.NullString
 }
@@ -31,6 +32,7 @@ func (q *Queries) CreateInterview(ctx context.Context, arg CreateInterviewParams
 		arg.UserID,
 		arg.FacultyID,
 		arg.Date,
+		arg.Time,
 		arg.IsCompleted,
 		arg.Remarks,
 	)
@@ -40,6 +42,7 @@ func (q *Queries) CreateInterview(ctx context.Context, arg CreateInterviewParams
 		&i.UserID,
 		&i.FacultyID,
 		&i.Date,
+		&i.Time,
 		&i.IsCompleted,
 		&i.Remarks,
 		&i.CreatedAt,
@@ -51,7 +54,7 @@ func (q *Queries) CreateInterview(ctx context.Context, arg CreateInterviewParams
 const deleteInterviewByID = `-- name: DeleteInterviewByID :one
 DELETE FROM interview
 WHERE id = $1
-RETURNING id, user_id, faculty_id, date, is_completed, remarks, created_at, updated_at
+RETURNING id, user_id, faculty_id, date, time, is_completed, remarks, created_at, updated_at
 `
 
 func (q *Queries) DeleteInterviewByID(ctx context.Context, id uuid.UUID) (Interview, error) {
@@ -62,6 +65,7 @@ func (q *Queries) DeleteInterviewByID(ctx context.Context, id uuid.UUID) (Interv
 		&i.UserID,
 		&i.FacultyID,
 		&i.Date,
+		&i.Time,
 		&i.IsCompleted,
 		&i.Remarks,
 		&i.CreatedAt,
@@ -71,7 +75,7 @@ func (q *Queries) DeleteInterviewByID(ctx context.Context, id uuid.UUID) (Interv
 }
 
 const getInterviewByID = `-- name: GetInterviewByID :one
-SELECT id, user_id, faculty_id, date, is_completed, remarks, created_at, updated_at FROM interview
+SELECT id, user_id, faculty_id, date, time, is_completed, remarks, created_at, updated_at FROM interview
 WHERE id = $1
 `
 
@@ -83,6 +87,7 @@ func (q *Queries) GetInterviewByID(ctx context.Context, id uuid.UUID) (Interview
 		&i.UserID,
 		&i.FacultyID,
 		&i.Date,
+		&i.Time,
 		&i.IsCompleted,
 		&i.Remarks,
 		&i.CreatedAt,
@@ -92,7 +97,7 @@ func (q *Queries) GetInterviewByID(ctx context.Context, id uuid.UUID) (Interview
 }
 
 const getInterviewsOfUser = `-- name: GetInterviewsOfUser :many
-SELECT id, user_id, faculty_id, date, is_completed, remarks, created_at, updated_at FROM interview
+SELECT id, user_id, faculty_id, date, time, is_completed, remarks, created_at, updated_at FROM interview
 WHERE user_id = $1
 `
 
@@ -110,6 +115,7 @@ func (q *Queries) GetInterviewsOfUser(ctx context.Context, userID uuid.UUID) ([]
 			&i.UserID,
 			&i.FacultyID,
 			&i.Date,
+			&i.Time,
 			&i.IsCompleted,
 			&i.Remarks,
 			&i.CreatedAt,
@@ -129,7 +135,7 @@ func (q *Queries) GetInterviewsOfUser(ctx context.Context, userID uuid.UUID) ([]
 }
 
 const getInterviewsOfUserByFaculty = `-- name: GetInterviewsOfUserByFaculty :many
-SELECT id, user_id, faculty_id, date, is_completed, remarks, created_at, updated_at FROM interview
+SELECT id, user_id, faculty_id, date, time, is_completed, remarks, created_at, updated_at FROM interview
 WHERE user_id = $1 and faculty_id = $2
 `
 
@@ -152,6 +158,7 @@ func (q *Queries) GetInterviewsOfUserByFaculty(ctx context.Context, arg GetInter
 			&i.UserID,
 			&i.FacultyID,
 			&i.Date,
+			&i.Time,
 			&i.IsCompleted,
 			&i.Remarks,
 			&i.CreatedAt,
@@ -175,17 +182,19 @@ UPDATE interview
 SET 
     faculty_id = $2,
     date = $3,
-    is_completed = $4,
-    remarks = $5,
+    time = $4,
+    is_completed = $5,
+    remarks = $6,
     updated_at = NOW()
 WHERE id = $1
-RETURNING id, user_id, faculty_id, date, is_completed, remarks, created_at, updated_at
+RETURNING id, user_id, faculty_id, date, time, is_completed, remarks, created_at, updated_at
 `
 
 type UpdateInterviewByIDParams struct {
 	ID          uuid.UUID
 	FacultyID   uuid.UUID
 	Date        sql.NullTime
+	Time        sql.NullTime
 	IsCompleted sql.NullBool
 	Remarks     sql.NullString
 }
@@ -195,6 +204,7 @@ func (q *Queries) UpdateInterviewByID(ctx context.Context, arg UpdateInterviewBy
 		arg.ID,
 		arg.FacultyID,
 		arg.Date,
+		arg.Time,
 		arg.IsCompleted,
 		arg.Remarks,
 	)
@@ -204,6 +214,7 @@ func (q *Queries) UpdateInterviewByID(ctx context.Context, arg UpdateInterviewBy
 		&i.UserID,
 		&i.FacultyID,
 		&i.Date,
+		&i.Time,
 		&i.IsCompleted,
 		&i.Remarks,
 		&i.CreatedAt,

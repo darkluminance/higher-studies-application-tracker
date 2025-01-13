@@ -49,6 +49,11 @@ export default function FacultyForm(
 		e.preventDefault();
 		const { id, ...filtered } = data();
 
+		// replace the spaces at the beginning and end of each of the research_areas in the filtered object
+		filtered.research_areas = filtered.research_areas.map((area) =>
+			area.replace(/^\s+|\s+$/g, "")
+		);
+
 		setIsLoading(true);
 
 		const payload = props?.editData ? { ...filtered, id: id } : filtered;
@@ -95,6 +100,7 @@ export default function FacultyForm(
 						id={`university-${data().id}`}
 						class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
 						value={data().university_id}
+						required
 						onChange={(e) =>
 							setData({ ...data(), university_id: e.target.value })
 						}
@@ -130,7 +136,7 @@ export default function FacultyForm(
 					onInput={(e) =>
 						setData({
 							...data(),
-							research_areas: e.target.value.replace(" ", "").split(","),
+							research_areas: e.target.value.split(","),
 						})
 					}
 				/>
