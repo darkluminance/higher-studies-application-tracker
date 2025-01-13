@@ -1,4 +1,24 @@
 services:
+  db:
+    image: postgres:17-alpine
+    build:
+      context: ./postgresql-database
+    volumes:
+      - db_volume:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=${DB_USERNAME}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_DATABASE}
+    ports:
+      - "5432:5432"
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME} -d ${DB_DATABASE}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
   backend:
     build:
       context: ./go-server
@@ -14,12 +34,17 @@ services:
       - DB_URL=${DB_URL}
       - PORT=${PORT}
       - SECRET_KEY=${SECRET_KEY}
+    entrypoint: >
+      sh -c "
+      goose -dir /app/migrations postgres ${DB_URL} up
+      "
     extra_hosts:
       - "host.docker.internal:host-gateway"
     networks:
       - app-network
     depends_on:
-      - db
+      db:
+        condition: service_healthy
 
   frontend:
     build:
@@ -35,21 +60,6 @@ services:
       - VITE_BACKEND_URL=${VITE_BACKEND_URL}
     depends_on:
       - backend
-    networks:
-      - app-network
-
-  db:
-    image: postgres:17-alpine
-    build:
-      context: ./postgresql-database
-    volumes:
-      - db_volume:/var/lib/postgresql/data
-    environment:
-      - POSTGRES_USER=${DB_USERNAME}
-      - POSTGRES_PASSWORD=${DB_PASSWORD}
-      - POSTGRES_DB=${DB_DATABASE}
-    ports:
-      - "5432:5432"
     networks:
       - app-network
 

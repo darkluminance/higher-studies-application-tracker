@@ -5,8 +5,10 @@ WORKDIR /app
 
 # Install Air for hot reloading
 RUN go install github.com/air-verse/air@latest
-
 COPY go.mod go.sum ./
+
+RUN go install github.com/pressly/goose/v3/cmd/goose@latest
+COPY migrations/ ./migrations
 
 RUN go mod download
 
