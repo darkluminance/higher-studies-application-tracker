@@ -116,7 +116,6 @@ CREATE TABLE university_application (
     language_score_submitted BOOLEAN DEFAULT false,
     gre_submitted BOOLEAN DEFAULT false,
     gmat_submitted BOOLEAN DEFAULT false,
-    is_submitted BOOLEAN DEFAULT false,
     remarks TEXT,
     created_at TIMESTAMP DEFAULT NOW(),
     updated_at TIMESTAMP DEFAULT NOW()
