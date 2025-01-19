@@ -34,6 +34,10 @@ services:
       - DB_URL=${DB_URL}
       - PORT=${PORT}
       - SECRET_KEY=${SECRET_KEY}
+      - SMTP_EMAIL=${SMTP_EMAIL}
+      - SMTP_PASSWORD=${SMTP_PASSWORD}
+      - SMTP_HOST=${SMTP_HOST}
+      - SMTP_PORT=${SMTP_PORT}
     entrypoint: >
       sh -c "
       goose -dir /app/migrations postgres ${DB_URL} up

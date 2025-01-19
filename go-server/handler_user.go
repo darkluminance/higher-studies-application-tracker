@@ -47,6 +47,11 @@ func (apiConfig *apiConfig) handlerCreateUser(w http.ResponseWriter, r *http.Req
 		return
 	}
 
+	// Send mail notification of user creation
+	fmt.Printf("Sending mail to %v\n", params.Email)
+	sendEmail(params.Email, "Welcome to TrackGrad!", fmt.Sprintf("Dear %s, you have successfully created an account on TrackGrad. Welcome aboard, and good luck on your grad journey.", params.Name))
+	fmt.Println("Email sending initiated")
+
 	respondWithJSON(w, 200, databaseUserToUser(user))
 }
 
