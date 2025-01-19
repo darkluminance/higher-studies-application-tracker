@@ -1,6 +1,7 @@
 import { createSignal } from "solid-js";
 import LoadingButton from "../components/LoadingButton";
 import { fetchData } from "../utils";
+import toast from "solid-toast";
 
 export default function Register() {
 	const [loading, setLoading] = createSignal(false);
@@ -26,7 +27,14 @@ export default function Register() {
 			body: JSON.stringify(data),
 		});
 
-		if (response) window.location.href = "/login";
+		if (response) {
+			toast.success(
+				"Registration successful. You'll receive an email shortly. You can now login with your credentials",
+				{
+					duration: 5000,
+				}
+			);
+		}
 
 		setLoading(false);
 	};
