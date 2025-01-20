@@ -81,7 +81,9 @@ function HomeTimeline() {
 									  timelineItem.university_name}
 							</p>
 							<p class="text-gray-500">
-								{new Date(timelineItem.date).toLocaleString()}
+								{timelineItem.type === "University"
+									? new Date(timelineItem.date).toISOString().split("T")[0]
+									: new Date(timelineItem.date).toLocaleString()}
 							</p>
 						</div>
 					)}

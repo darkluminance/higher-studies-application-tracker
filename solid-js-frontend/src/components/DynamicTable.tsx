@@ -27,7 +27,7 @@ export default function DynamicTable(props: {
 					filtered[key] =
 						key === "created_at" || key === "updated_at"
 							? parsedDate.toUTCString().slice(0, -4)
-							: parsedDate.toDateString();
+							: parsedDate.toISOString().split("T")[0];
 				}
 			} else if (typeof filtered[key] === "boolean") {
 				filtered[key] = filtered[key] ? "YES" : "NO";
