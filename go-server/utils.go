@@ -24,6 +24,10 @@ func ToNullTime(t time.Time) sql.NullTime {
 	return sql.NullTime{Time: t, Valid: !t.IsZero()}
 }
 
+func ToNullUUID(u uuid.UUID) uuid.NullUUID {
+	return uuid.NullUUID{UUID: u, Valid: u != uuid.Nil}
+}
+
 func ToNullReplyVibeEnum(s string) database.NullReplyVibeEnum {
 	if s == "" {
 		return database.NullReplyVibeEnum{Valid: false}

@@ -13,6 +13,7 @@ import (
 	"github.com/joho/godotenv"
 
 	_ "github.com/lib/pq"
+	"github.com/robfig/cron/v3"
 )
 
 type apiConfig struct {
@@ -40,6 +41,11 @@ func main() {
 	apiCfg := apiConfig{
 		DB: database.New(conn),
 	}
+
+	c := cron.New()
+	c.AddFunc("@every 1m", func() { apiCfg.checkForNotificationsToSend() })
+	fmt.Println("Started notification scheduler...")
+	c.Start()
 
 	router := chi.NewRouter()
 	router.Use(cors.Handler(cors.Options{

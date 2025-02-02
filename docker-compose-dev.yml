@@ -41,6 +41,7 @@ services:
     entrypoint: >
       sh -c "
       goose -dir /app/migrations postgres ${DB_URL} up
+      && air
       "
     extra_hosts:
       - "host.docker.internal:host-gateway"

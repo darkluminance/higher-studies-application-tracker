@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -57,8 +58,9 @@ func (apiConfig *apiConfig) handlerCreateUniversity(w http.ResponseWriter, r *ht
 	})
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, fmt.Sprintf("Failed to create university: %v", err))
-		return
 	}
+
+	createNotificationAsUniversity(apiConfig, r.Context(), params.Name, params.EarlyDeadline, params.ApplicationDeadline, user.Email, university.ID)
 
 	respondWithJSON(w, http.StatusCreated, databaseUniversityToUniversity(university))
 }
@@ -112,6 +114,13 @@ func (apiConfig *apiConfig) handlerUpdateUniversityByID(w http.ResponseWriter, r
 		respondWithError(w, http.StatusInternalServerError, fmt.Sprintf("Failed to update university: %v", err))
 		return
 	}
+
+	_, err = apiConfig.DB.DeleteNotificationByRefID(r.Context(), ToNullUUID(params.ID))
+	if err != nil {
+		fmt.Printf("Error while deleting notification: %v\n", err)
+	}
+
+	createNotificationAsUniversity(apiConfig, r.Context(), params.Name, params.EarlyDeadline, params.ApplicationDeadline, user.Email, params.ID)
 
 	respondWithJSON(w, http.StatusCreated, databaseUniversityToUniversity(university))
 }
@@ -173,4 +182,68 @@ func (apiConfig *apiConfig) handlerDeleteUniversityByID(w http.ResponseWriter, r
 	}
 
 	respondWithJSON(w, http.StatusOK, databaseUniversityToUniversity(university))
+}
+
+func createNotificationAsUniversity(apiConfig *apiConfig, ctx context.Context, university string, earlyDeadline time.Time, applicationDeadline time.Time, email string, refID uuid.UUID) {
+	type deadlineInfo struct {
+		notifyTime time.Time
+		eventTime  time.Time
+	}
+	var notifications []deadlineInfo
+
+	if !earlyDeadline.IsZero() {
+		earlyDeadlineDay := time.Date(
+			earlyDeadline.Year(),
+			earlyDeadline.Month(),
+			earlyDeadline.Day(),
+			0, 0, 0, 0,
+			earlyDeadline.Location(),
+		)
+		notifications = append(notifications, deadlineInfo{
+			notifyTime: earlyDeadlineDay.AddDate(0, 0, -5),
+			eventTime:  earlyDeadlineDay,
+		})
+		notifications = append(notifications, deadlineInfo{
+			notifyTime: earlyDeadlineDay,
+			eventTime:  earlyDeadlineDay,
+		})
+	}
+
+	if !applicationDeadline.IsZero() {
+		applicationDeadlineDay := time.Date(
+			applicationDeadline.Year(),
+			applicationDeadline.Month(),
+			applicationDeadline.Day(),
+			0, 0, 0, 0,
+			applicationDeadline.Location(),
+		)
+		notifications = append(notifications, deadlineInfo{
+			notifyTime: applicationDeadlineDay.AddDate(0, 0, -5),
+			eventTime:  applicationDeadlineDay,
+		})
+		notifications = append(notifications, deadlineInfo{
+			notifyTime: applicationDeadlineDay,
+			eventTime:  applicationDeadlineDay,
+		})
+	}
+
+	for _, notification := range notifications {
+		message := fmt.Sprintf("Dear User, your application deadline for %s on %s is approaching. Make sure to submit your application properly.\n\nRegards,\nTrackGrad system",
+			university, notification.eventTime.Format("January 2, 2006"))
+
+		_, err := apiConfig.DB.CreateNotification(ctx, database.CreateNotificationParams{
+			UserEmail:  email,
+			EventTime:  notification.eventTime,
+			NotifyTime: notification.notifyTime,
+			NotificationType: database.NullNotificationsTypeEnum{
+				NotificationsTypeEnum: database.NotificationsTypeEnumDEADLINE,
+				Valid:                 true,
+			},
+			NotificationRefID: ToNullUUID(refID),
+			Message:           message,
+		})
+		if err != nil {
+			fmt.Printf("Failed to create notification: %v", err)
+		}
+	}
 }

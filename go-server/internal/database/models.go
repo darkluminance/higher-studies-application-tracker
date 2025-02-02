@@ -8,6 +8,7 @@ import (
 	"database/sql"
 	"database/sql/driver"
 	"fmt"
+	"time"
 
 	"github.com/google/uuid"
 )
@@ -52,6 +53,48 @@ func (ns NullApplicationTypeEnum) Value() (driver.Value, error) {
 		return nil, nil
 	}
 	return string(ns.ApplicationTypeEnum), nil
+}
+
+type NotificationsTypeEnum string
+
+const (
+	NotificationsTypeEnumDEADLINE  NotificationsTypeEnum = "DEADLINE"
+	NotificationsTypeEnumINTERVIEW NotificationsTypeEnum = "INTERVIEW"
+)
+
+func (e *NotificationsTypeEnum) Scan(src interface{}) error {
+	switch s := src.(type) {
+	case []byte:
+		*e = NotificationsTypeEnum(s)
+	case string:
+		*e = NotificationsTypeEnum(s)
+	default:
+		return fmt.Errorf("unsupported scan type for NotificationsTypeEnum: %T", src)
+	}
+	return nil
+}
+
+type NullNotificationsTypeEnum struct {
+	NotificationsTypeEnum NotificationsTypeEnum
+	Valid                 bool // Valid is true if NotificationsTypeEnum is not NULL
+}
+
+// Scan implements the Scanner interface.
+func (ns *NullNotificationsTypeEnum) Scan(value interface{}) error {
+	if value == nil {
+		ns.NotificationsTypeEnum, ns.Valid = "", false
+		return nil
+	}
+	ns.Valid = true
+	return ns.NotificationsTypeEnum.Scan(value)
+}
+
+// Value implements the driver Valuer interface.
+func (ns NullNotificationsTypeEnum) Value() (driver.Value, error) {
+	if !ns.Valid {
+		return nil, nil
+	}
+	return string(ns.NotificationsTypeEnum), nil
 }
 
 type ReplyVibeEnum string
@@ -180,6 +223,16 @@ type Mail struct {
 	Remarks              sql.NullString
 	CreatedAt            sql.NullTime
 	UpdatedAt            sql.NullTime
+}
+
+type Notification struct {
+	ID                uuid.UUID
+	UserEmail         string
+	NotificationType  NullNotificationsTypeEnum
+	NotificationRefID uuid.NullUUID
+	EventTime         time.Time
+	NotifyTime        time.Time
+	Message           string
 }
 
 type Recommender struct {

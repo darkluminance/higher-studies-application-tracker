@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -38,6 +39,8 @@ func (apiConfig *apiConfig) handlerCreateInterview(w http.ResponseWriter, r *htt
 		respondWithError(w, http.StatusInternalServerError, fmt.Sprintf("Couldn't create interview: %v", err))
 		return
 	}
+
+	createNotificationAsInterview(apiConfig, r.Context(), params.Date, params.Time, user.Email, interview.ID)
 
 	respondWithJSON(w, http.StatusCreated, databaseInterviewToInterview(interview))
 }
@@ -109,6 +112,13 @@ func (apiConfig *apiConfig) handlerUpdateInterviewByID(w http.ResponseWriter, r 
 		return
 	}
 
+	_, err = apiConfig.DB.DeleteNotificationByRefID(r.Context(), ToNullUUID(params.ID))
+	if err != nil {
+		fmt.Printf("Error while deleting notification: %v\n", err)
+	}
+
+	createNotificationAsInterview(apiConfig, r.Context(), params.Date, params.Time, user.Email, params.ID)
+
 	respondWithJSON(w, http.StatusOK, databaseInterviewToInterview(interview))
 }
 
@@ -161,4 +171,80 @@ func (apiConfig *apiConfig) handlerGetInterviewsOfUserByFacultyID(w http.Respons
 	}
 
 	respondWithJSON(w, http.StatusOK, interview_list)
+}
+
+func createNotificationAsInterview(apiConfig *apiConfig, ctx context.Context, date time.Time, timeStr string, email string, refID uuid.UUID) {
+	if date.IsZero() {
+		return
+	}
+
+	// Get the interview to find the faculty ID
+	interview, err := apiConfig.DB.GetInterviewByID(ctx, refID)
+	if err != nil {
+		fmt.Printf("Failed to get interview details: %v", err)
+		return
+	}
+
+	// Get the faculty details
+	faculty, err := apiConfig.DB.GetFacultyByID(ctx, interview.FacultyID)
+	if err != nil {
+		fmt.Printf("Failed to get faculty details: %v", err)
+		return
+	}
+
+	interviewTime := date
+	if timeStr != "" {
+		t, err := time.Parse("03:04 PM", timeStr)
+		if err == nil {
+			interviewTime = time.Date(
+				date.Year(),
+				date.Month(),
+				date.Day(),
+				t.Hour(),
+				t.Minute(),
+				0, 0,
+				date.Location(),
+			)
+		}
+	}
+
+	// Create notification for 1 day before
+	message := fmt.Sprintf("Dear User, you have an interview scheduled with %s for tomorrow at %s.\n\nRegards,\nTrackGrad system",
+		faculty.Name,
+		interviewTime.Format("3:04 PM, January 2, 2006"))
+
+	_, err = apiConfig.DB.CreateNotification(ctx, database.CreateNotificationParams{
+		UserEmail:  email,
+		EventTime:  interviewTime,
+		NotifyTime: interviewTime.AddDate(0, 0, -1),
+		NotificationType: database.NullNotificationsTypeEnum{
+			NotificationsTypeEnum: database.NotificationsTypeEnumINTERVIEW,
+			Valid:                 true,
+		},
+		NotificationRefID: ToNullUUID(refID),
+		Message:           message,
+	})
+	if err != nil {
+		fmt.Printf("Failed to create notification: %v", err)
+	}
+
+	// Create notification for 1 hour before
+	message = fmt.Sprintf("Dear User, your interview with %s is scheduled in 1 hour at %s.\n\nRegards,\nTrackGrad system",
+		faculty.Name,
+		interviewTime.Format("3:04 PM, January 2, 2006"))
+
+	_, err = apiConfig.DB.CreateNotification(ctx, database.CreateNotificationParams{
+		UserEmail:  email,
+		EventTime:  interviewTime,
+		NotifyTime: interviewTime.Add(-1 * time.Hour),
+		NotificationType: database.NullNotificationsTypeEnum{
+			NotificationsTypeEnum: database.NotificationsTypeEnumINTERVIEW,
+			Valid:                 true,
+		},
+		NotificationRefID: ToNullUUID(refID),
+		Message:           message,
+	})
+	if err != nil {
+		fmt.Printf("Failed to create notification: %v", err)
+	}
 }
