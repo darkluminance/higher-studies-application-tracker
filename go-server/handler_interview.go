@@ -140,6 +140,11 @@ func (apiConfig *apiConfig) handlerDeleteInterviewByID(w http.ResponseWriter, r 
 		return
 	}
 
+	_, err = apiConfig.DB.DeleteNotificationByRefID(r.Context(), ToNullUUID(params.ID))
+	if err != nil {
+		fmt.Printf("Error while deleting notification: %v\n", err)
+	}
+
 	respondWithJSON(w, http.StatusOK, databaseInterviewToInterview(interview))
 }
 
