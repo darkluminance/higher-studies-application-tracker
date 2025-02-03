@@ -16,10 +16,16 @@ COPY . .
 # Build the application
 RUN CGO_ENABLED=0 GOOS=linux go build -o main .
 
+# Manually build `goose` inside the container
+RUN go build -o goose ./cmd/goose
+
 # Final stage
 FROM alpine:latest
 
 WORKDIR /app
+
+# Copy the prebuilt `goose` binary
+COPY --from=builder /app/goose /usr/local/bin/goose
 
 # Copy the prebuilt goose binary
 COPY goose /usr/local/bin/goose
