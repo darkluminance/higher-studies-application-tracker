@@ -262,7 +262,6 @@ type University struct {
 	Website                      sql.NullString
 	Location                     sql.NullString
 	MainRanking                  sql.NullInt32
-	SubjectRanking               sql.NullInt32
 	ApplicationFee               sql.NullInt32
 	ApplicationDeadline          sql.NullTime
 	EarlyDeadline                sql.NullTime

@@ -18,7 +18,6 @@ export default function UniversityForm(
 			website: "",
 			location: "",
 			main_ranking: 0,
-			subject_ranking: 0,
 			application_fee: 0,
 			application_deadline: new Date().toISOString().split("T")[0],
 			early_deadline: new Date().toISOString().split("T")[0],
@@ -110,34 +109,18 @@ export default function UniversityForm(
 					onInput={(e) => setData({ ...data(), location: e.target.value })}
 				/>
 			</div>
-			<div class="block grid grid-cols-2 gap-4">
-				<div>
-					<label for="main_ranking">Ranking:</label>
-					<input
-						type="number"
-						min="0"
-						id="main_ranking"
-						value={data().main_ranking as number}
-						class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
-						onInput={(e) =>
-							setData({ ...data(), main_ranking: Number(e.target.value) })
-						}
-					/>
-				</div>
-
-				<div>
-					<label for="subject_ranking">Subject Ranking:</label>
-					<input
-						type="number"
-						min="0"
-						id="subject_ranking"
-						value={data().subject_ranking as number}
-						class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
-						onInput={(e) =>
-							setData({ ...data(), subject_ranking: Number(e.target.value) })
-						}
-					/>
-				</div>
+			<div class="block">
+				<label for="main_ranking">Ranking:</label>
+				<input
+					type="number"
+					min="0"
+					id="main_ranking"
+					value={data().main_ranking as number}
+					class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
+					onInput={(e) =>
+						setData({ ...data(), main_ranking: Number(e.target.value) })
+					}
+				/>
 			</div>
 			<div class="block">
 				<label for="application_fee">Application Fee:</label>

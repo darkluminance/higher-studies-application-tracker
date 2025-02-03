@@ -5,7 +5,6 @@ export type Universities = {
 	website: string;
 	location: string;
 	main_ranking: number | null;
-	subject_ranking: number | null;
 	application_fee: number;
 	application_deadline: string;
 	early_deadline: string;
