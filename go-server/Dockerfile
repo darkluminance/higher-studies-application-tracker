@@ -5,10 +5,9 @@ WORKDIR /app
 
 # Copy go mod and sum files
 COPY go.mod go.sum ./
-COPY migrations/ ./migrations
 
-# Copy the prebuilt `goose` binary from the build context
-COPY goose/ /usr/local/bin/goose
+COPY migrations/ ./migrations
+COPY goose/ ./goose
 
 # Download dependencies
 RUN go mod download
@@ -27,6 +26,7 @@ WORKDIR /app
 # Copy the binary from builder
 COPY --from=builder /app/main .
 COPY --from=builder /app/migrations ./app/main/migrations
+COPY --from=builder /app/goose/goose /usr/local/bin/goose
 
 # Create necessary directories and set permissions
 RUN chmod +x /app/main
