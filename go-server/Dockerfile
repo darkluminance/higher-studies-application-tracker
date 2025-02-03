@@ -29,7 +29,7 @@ COPY --from=builder /app/main .
 COPY --from=builder /app/migrations ./app/main/migrations
 
 # Create necessary directories and set permissions
-RUN chmod +x /app/main
+RUN chmod +x /app/main /usr/local/bin/goose
 
 EXPOSE 8080
 
