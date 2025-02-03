@@ -7,6 +7,9 @@ WORKDIR /app
 COPY go.mod go.sum ./
 COPY migrations/ ./migrations
 
+# Copy the prebuilt `goose` binary from the build context
+COPY goose/ /usr/local/bin/goose
+
 # Download dependencies
 RUN go mod download
 
@@ -20,9 +23,6 @@ RUN CGO_ENABLED=0 GOOS=linux go build -o main .
 FROM alpine:latest
 
 WORKDIR /app
-
-# Copy the prebuilt `goose` binary from the build context
-COPY goose /usr/local/bin/goose
 
 # Copy the binary from builder
 COPY --from=builder /app/main .
