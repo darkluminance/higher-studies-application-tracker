@@ -78,7 +78,12 @@ export default function InterviewForm(
 	return (
 		<form class="space-y-5" onSubmit={handleSubmit}>
 			<div class="block">
-				<label for="faculty">Faculty:</label>
+				<label for="faculty" class="flex justify-between">
+					<span>Faculty:</span>
+					<a href="/faculty" class="text-cyan-500">
+						Create faculty
+					</a>
+				</label>
 				<div class="flex gap-4">
 					<select
 						id={`faculty-${data().id}`}

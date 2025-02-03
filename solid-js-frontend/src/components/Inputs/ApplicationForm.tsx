@@ -226,23 +226,29 @@ export default function ApplicationForm(
 				</select>
 			</div>
 			<div class="block">
-				<div class="grid grid-cols-2">
+				<div class="flex justify-between">
 					<label>Shortlisted Faculties:</label>
-					<button
-						type="button"
-						class="text-right text-cyan-400 hover:text-cyan-300"
-						onClick={() => {
-							setData({
-								...data(),
-								shortlisted_faculties_id: [
-									...data().shortlisted_faculties_id,
-									"",
-								],
-							});
-						}}
-					>
-						Add Faculty
-					</button>
+					<div>
+						<button
+							type="button"
+							class="text-right text-cyan-400 hover:text-cyan-300"
+							onClick={() => {
+								setData({
+									...data(),
+									shortlisted_faculties_id: [
+										...data().shortlisted_faculties_id,
+										"",
+									],
+								});
+							}}
+						>
+							Add Faculty
+						</button>
+						&nbsp;| &nbsp;
+						<a href="/faculty" class="text-cyan-400">
+							Create faculty
+						</a>
+					</div>
 				</div>
 				<For each={data().shortlisted_faculties_id}>
 					{(_, index) => (
@@ -293,24 +299,32 @@ export default function ApplicationForm(
 				</For>
 			</div>
 			<div class="block">
-				<div class="grid grid-cols-2">
+				<div class="flex justify-between">
 					<label>Recommenders: ({lorCount()} required)</label>
-					<button
-						type="button"
-						class="text-right text-cyan-400 hover:text-cyan-300"
-						onClick={() => {
-							if (data().recommenders_id.length < lorCount()) {
-								setData({
-									...data(),
-									recommenders_id: [...data().recommenders_id, ""],
-								});
-							} else {
-								toast.error(`Maximum ${lorCount()} recommenders allowed`);
-							}
-						}}
-					>
-						Add Recommender
-					</button>
+					<div>
+						<button
+							type="button"
+							class="text-right text-cyan-400 hover:text-cyan-300"
+							onClick={() => {
+								if (data().recommenders_id.length < lorCount()) {
+									setData({
+										...data(),
+										recommenders_id: [...data().recommenders_id, ""],
+									});
+								} else if (lorCount() == 0) {
+									toast.error(`Select a university first`);
+								} else {
+									toast.error(`Maximum ${lorCount()} recommenders allowed`);
+								}
+							}}
+						>
+							Add Recommender
+						</button>
+						&nbsp;| &nbsp;
+						<a href="/recommender" class="text-cyan-400">
+							Create Recommender
+						</a>
+					</div>
 				</div>
 				<For each={data().recommenders_id}>
 					{(_, index) => (

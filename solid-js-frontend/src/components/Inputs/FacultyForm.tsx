@@ -94,7 +94,12 @@ export default function FacultyForm(
 				/>
 			</div>
 			<div class="block">
-				<label for="university">University:</label>
+				<label for="university" class="flex justify-between">
+					<span>University:</span>
+					<a href="/university" class="text-cyan-500">
+						Create university
+					</a>
+				</label>
 				<div class="flex gap-4">
 					<select
 						id={`university-${data().id}`}
