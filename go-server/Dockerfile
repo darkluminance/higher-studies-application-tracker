@@ -17,7 +17,7 @@ COPY . .
 RUN CGO_ENABLED=0 GOOS=linux go build -o main .
 
 # Manually build `goose` inside the container
-RUN go build -o goose ./cmd/goose
+RUN go build -o goose ./goose
 
 # Final stage
 FROM alpine:latest
