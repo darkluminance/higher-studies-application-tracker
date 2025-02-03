@@ -5,8 +5,6 @@ WORKDIR /app
 
 # Copy go mod and sum files
 COPY go.mod go.sum ./
-
-RUN go install github.com/pressly/goose/v3/cmd/goose@latest
 COPY migrations/ ./migrations
 
 # Download dependencies
@@ -23,10 +21,12 @@ FROM alpine:latest
 
 WORKDIR /app
 
+# Copy the prebuilt goose binary
+COPY goose /usr/local/bin/goose
+
 # Copy the binary from builder
 COPY --from=builder /app/main .
 COPY --from=builder /app/migrations ./app/main/migrations
-COPY --from=builder /go/bin/goose /usr/local/bin/goose
 
 # Create necessary directories and set permissions
 RUN chmod +x /app/main
