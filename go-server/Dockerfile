@@ -24,8 +24,8 @@ FROM alpine:latest
 
 WORKDIR /app
 
-# Copy the prebuilt `goose` binary
-COPY --from=builder /app/goose /usr/local/bin/goose
+# Copy the prebuilt `goose` binary from the build context
+COPY goose /usr/local/bin/goose
 
 # Copy the binary from builder
 COPY --from=builder /app/main .
