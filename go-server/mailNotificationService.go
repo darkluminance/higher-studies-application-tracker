@@ -17,7 +17,6 @@ func sendEmail(to string, subject string, body string) error {
 		password := os.Getenv("SMTP_PASSWORD")
 		smtpHost := os.Getenv("SMTP_HOST")
 		smtpPort := os.Getenv("SMTP_PORT")
-		fmt.Printf("Sending mail to: %v\n", to)
 
 		message := fmt.Sprintf("Subject: %s\r\n\r\n%s", subject, body)
 
@@ -36,7 +35,6 @@ func sendEmail(to string, subject string, body string) error {
 
 func (apiConfig *apiConfig) checkForNotificationsToSend() {
 	currentTime := time.Now()
-	fmt.Printf("Checking for notifications to send at %v\n", currentTime)
 
 	notifications, err := apiConfig.DB.GetNotificationsToSendNow(context.Background(), currentTime)
 	if err != nil {
