@@ -74,7 +74,7 @@ type University struct {
 	Name                         string    `json:"name"`
 	Website                      string    `json:"website"`
 	Location                     string    `json:"location"`
-	MainRanking                  int       `json:"ranking"`
+	MainRanking                  int       `json:"main_ranking"`
 	ApplicationFee               int       `json:"application_fee"`
 	ApplicationDeadline          time.Time `json:"application_deadline"`
 	EarlyDeadline                time.Time `json:"early_deadline"`
