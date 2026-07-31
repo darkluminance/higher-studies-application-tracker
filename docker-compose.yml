@@ -47,12 +47,12 @@ services:
   frontend:
     image: ryedae/higher-studies-application-tracker_frontend:latest
     build:
-      context: ./solid-js-frontend
+      context: ./react-js-frontend-v2
       dockerfile: Dockerfile
     ports:
       - "3000:3000"
     volumes:
-      - ./solid-js-frontend:/app
+      - ./react-js-frontend-v2:/app
       - /app/node_modules
     environment:
       - NODE_ENV=development
