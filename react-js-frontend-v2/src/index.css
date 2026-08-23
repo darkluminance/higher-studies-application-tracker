@@ -1,0 +1,74 @@
+/* Self-hosted fonts (reliable in Docker / offline) */
+@import "@fontsource-variable/newsreader";
+@import "@fontsource-variable/mulish";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+	:root {
+		color-scheme: light;
+	}
+
+	html,
+	body,
+	#root {
+		height: 100%;
+	}
+
+	body {
+		@apply bg-canvas font-sans text-ink-muted antialiased;
+		font-synthesis-weight: none;
+		text-rendering: optimizeLegibility;
+	}
+
+	/* Calm focus ring — clay, never harsh */
+	:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+		outline: 2px solid theme("colors.clay.DEFAULT");
+		outline-offset: 2px;
+		border-radius: 4px;
+	}
+
+	h1,
+	h2,
+	h3 {
+		@apply font-serif text-ink;
+		font-weight: 400;
+	}
+}
+
+@layer components {
+	/* Uppercase micro-label used throughout the design */
+	.micro-label {
+		@apply font-sans uppercase tracking-micro text-label;
+		font-size: 10px;
+		font-weight: 600;
+	}
+
+	/* Status pill base — variants applied via color utilities */
+	.pill {
+		@apply inline-flex items-center rounded-pill font-sans;
+		padding: 4px 11px;
+		font-size: 10.5px;
+		font-weight: 700;
+		line-height: 1;
+		letter-spacing: 0.01em;
+	}
+}
+
+@layer utilities {
+	/* Thin, calm scrollbars */
+	.calm-scroll {
+		scrollbar-width: thin;
+		scrollbar-color: theme("colors.line.field") transparent;
+	}
+	.calm-scroll::-webkit-scrollbar {
+		width: 8px;
+		height: 8px;
+	}
+	.calm-scroll::-webkit-scrollbar-thumb {
+		background: theme("colors.line.field");
+		border-radius: 999px;
+	}
+}

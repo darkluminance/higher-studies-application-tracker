@@ -51,14 +51,16 @@ services:
       db:
         condition: service_healthy
 
+  # TrackGrad React frontend (primary). The legacy SolidJS app remains in
+  # ./solid-js-frontend for reference but is no longer served.
   frontend:
     build:
-      context: ./solid-js-frontend
-      dockerfile: Dockerfile-dev
+      context: ./react-js-frontend-v2
+      dockerfile: Dockerfile
     ports:
       - "3000:3000"
     volumes:
-      - ./solid-js-frontend:/app
+      - ./react-js-frontend-v2:/app
       - /app/node_modules
     environment:
       - NODE_ENV=development
