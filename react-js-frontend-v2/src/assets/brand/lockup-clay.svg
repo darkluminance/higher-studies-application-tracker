@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="360" height="80" viewBox="0 0 360 80" fill="none">
+  
+  <g transform="translate(8 8)" stroke="#a26a4f" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <path d="M32 17 55 27 32 37 9 27z" fill="#a26a4f" stroke="none"></path>
+    <path d="M16 31v9.5c0 3.6 7.2 6.5 16 6.5s16-2.9 16-6.5V31"></path>
+    <path d="M55 27v11.5"></path>
+    <circle cx="55" cy="42" r="3" fill="#a26a4f" stroke="none"></circle>
+  </g>
+  <text x="86" y="52" class="wm" fill="#33302a">trackgrad</text>
+</svg>

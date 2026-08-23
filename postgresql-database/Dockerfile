@@ -1,4 +1,4 @@
-FROM postgres
+FROM postgres:17-alpine
 
 # Copy the database initialize script
 RUN mkdir -p /images/
