@@ -7,7 +7,7 @@
 Universities, applications, faculty outreach, recommendation letters and interviews —
 all in one unhurried place. Built to feel like a study journal, not a deadline machine.
 
-[Live demo](http://15.206.127.42:3000/)
+[Live demo](http://138.2.100.236:3000/)
 
 </div>
 
